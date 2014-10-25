@@ -1,0 +1,9 @@
+{
+	"name": "codenamespace",
+	"description": "A minimal D application.",
+	"copyright": "Copyright © 2014, wildn00b",
+	"authors": ["wildn00b"],
+	"dependencies": {
+		"derelict-sdl2": ">=1.2.8"
+	}
+}
