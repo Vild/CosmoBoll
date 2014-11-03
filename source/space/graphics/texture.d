@@ -24,6 +24,9 @@ public:
 
 	@property SDL_Texture* Texture() { return texture; }
 	@property SDL_Rect* Size() { return size; }
+	void SetAlpha(double a) {
+		SDL_SetTextureAlphaMod(texture, cast(ubyte)(255*a));
+	}
 
 private:
 	SDL_Renderer *renderer;

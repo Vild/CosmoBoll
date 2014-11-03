@@ -13,14 +13,20 @@ import space.music.song;
 import space.graphics.text;
 import space.log.log;
 import space.enginestate;
+import space.io.keyboard;
+import space.io.mouse;
 
 class Engine {
 public:
 	this(string title, int width, int height, bool fullscreen) {
 		log = Log.MainLogger;
 		state = null;
+		newstate = null;
 		loadLibraries();
+		this.size = SDL_Rect(0, 0, width, height);
 		initSDL(title, width, height, fullscreen);
+		keyboard = new Keyboard();
+		mouse = new Mouse();
 	}
 
 	~this() {
@@ -41,6 +47,14 @@ public:
 
 
 		while (!done) {
+			if (state != newstate) {
+				destroy(state);
+				state = newstate;
+			}
+
+			if (state is null)
+				break;
+
 			TickDuration curtime = Clock.currAppTick;
 			TickDuration diff = curtime - oldtime;
 			double delta = cast(double)diff.usecs/1_000_000;//1 000 000 µsec/ 1 sec
@@ -55,6 +69,9 @@ public:
 						done = true;
 				}
 			}
+
+			keyboard.Update(delta);
+			mouse.Update();
 
 			state.Update(delta);
 
@@ -77,22 +94,34 @@ public:
 	}
 
 	@property SDL_Renderer* Renderer() { return renderer; }
-	@property ref EngineState State() { return state; }
+	@property EngineState State() { return state; }
+	@property EngineState State(EngineState state) {
+		this.newstate = state;
+		return state;
+	}
 	@property double CurrentTick() { return tick; }
 	@property int FPS() { return currentFPS; }
 	@property double FPS_MS() { return currentFPS_MS; }
+	@property Mouse MouseState() { return mouse; };
+	@property Keyboard KeyboardState() { return keyboard; }
+
+	@property ref SDL_Rect Size() { return size; }
 private:
 	Log log;
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	EngineState state;
+	EngineState newstate;
+	Mouse mouse;
+	Keyboard keyboard;
+
+
+	SDL_Rect size;
 
 	uint lastTime;
 	int frame;
-	
 	double tick;
-
 	int currentFPS;
 	double currentFPS_MS;
 
