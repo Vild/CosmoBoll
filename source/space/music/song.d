@@ -26,7 +26,7 @@ private:
 		if (music is null)
 			Log.MainLogger.Critical!loadFile("Failed to load '%s', aborting!", file);
 		else
-			Log.MainLogger.Info!loadFile("Loaded texture '%s'", file);
+			Log.MainLogger.Info!loadFile("Loaded song '%s'", file);
 
 	}
 

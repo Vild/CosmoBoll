@@ -7,6 +7,7 @@ else
 import std.traits : isSomeChar, isAggregateType, isSomeString, isIntegral, isBoolean, fullyQualifiedName;
 import std.conv : toTextRange;
 import std.string : format;
+import std.stdio : File;
 
 enum LogLevel {
 	VERBOSE,
@@ -22,6 +23,7 @@ public:
 		if (mainLogger is null) {
 			mainLogger = new Log();
 			mainLogger.AttachHandler(&TerminalHandler);
+			mainLogger.AttachHandler(&FileLog);
 			version(Posix) {
 				stdout.restoreDefaults;
 				stderr.restoreDefaults;
@@ -79,9 +81,13 @@ public:
 		}
 	}
 
+	@property ref File LogFile() { return Log.logFile; }
+
 private:
 	static Log mainLogger = null;
+	static File logFile;
 	LogHandlerFunc[] handlers;
+	
 
 	string formatMessage(S...)(lazy string format_, lazy S args) {
 		string message = format_;
@@ -184,5 +190,46 @@ private:
 			stdout.flush;
 		}
 	}
+
+	static void FileLog(LogLevel level, string module_, lazy string message) {
+		import std.string;
+		import std.datetime;
+		if (!Log.logFile.isOpen)
+			return;
+		char icon = ' ';
+		
+		switch (level) {
+			case LogLevel.VERBOSE:
+				icon = '&';
+				break;
+			case LogLevel.DEBUG:
+				icon = '%';
+				break;
+			case LogLevel.INFO:
+				icon = '*';
+				break;
+			case LogLevel.WARNING:
+				icon = '#';
+				break;
+			case LogLevel.SEVERE:
+				icon = '!';
+				break;
+			default:
+				icon = '?';
+				break;
+		}
+		
+		SysTime t = Clock.currTime;
+		
+		auto dateTime = DateTime(Date(t.year, t.month, t.day), TimeOfDay(t.hour, t.minute, t.second));
+		
+		string time = dateTime.toSimpleString;
+		
+		string levelText = format("[%c] [%s] [%s]\t %s", icon, module_, time, message);
+		
+		logFile.writeln(levelText);
+		logFile.flush();
+	}
+
 }
 

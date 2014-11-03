@@ -11,15 +11,16 @@ import derelict.sdl2.ttf;
 import space.graphics.texture;
 import space.music.song;
 import space.graphics.text;
-
 import space.log.log;
+import space.enginestate;
 
 class Engine {
 public:
-	this() {
+	this(string title, int width, int height, bool fullscreen) {
 		log = Log.MainLogger;
+		state = null;
 		loadLibraries();
-		initSDL("Codename Space - Lorem Ipsum", 1366, 768, false);
+		initSDL(title, width, height, fullscreen);
 	}
 
 	~this() {
@@ -32,14 +33,6 @@ public:
 	void MainLoop() {
 		bool done = false;
 		SDL_Event event;
-		Texture tex = new Texture(renderer, "res/img/64x64.png");
-		Song song = new Song("res/song/song.ogg");
-		Song success = new Song("res/song/success.ogg");
-		Song laugh = new Song("res/song/laugh.ogg");
-		SDL_Rect* middle = new SDL_Rect((1366/2)-(tex.Size.w/2*2), (768/2)-(tex.Size.h/2*2), tex.Size.w*2, tex.Size.h*2);
-		Text fpstext = new Text(renderer, "FPS: UNKNOWN", 2);
-		double count = 0;
-		bool lock = false;
 		TickDuration oldtime = Clock.currAppTick;
 
 		lastTime = SDL_GetTicks();
@@ -60,44 +53,48 @@ public:
 				else if (event.type == SDL_KEYDOWN) {
 					if (event.key.keysym.sym == SDLK_ESCAPE)
 						done = true;
-					else if (event.key.keysym.sym == SDLK_a	)
-						song.Play(1);
-					else if (event.key.keysym.sym == SDLK_s)
-						lock = !lock;
 				}
 			}
 
-			SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255);
+			state.Update(delta);
+
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 			SDL_RenderClear(renderer);
-			tex.Render(null, middle, count);
-			fpstext.Render(new SDL_Rect(10, 10));
+			state.Render();
+
 			SDL_RenderPresent(renderer);
-			count += delta*2;
 			frame++;
 			tick+=delta;
 			if (SDL_GetTicks() - lastTime >= 1000) {
 				import std.string : format;
-				string f = format("%d fps, %f ms/frame", frame, 1000.0/cast(double)frame);
-				log.Info!MainLoop(f);
-				fpstext.Text = f;
+				currentFPS = frame;
+				currentFPS_MS = 1000.0/cast(double)frame;
 				frame = 0;
 				lastTime += 1000;
 			}
-			if (lock)
-				SDL_Delay(1000/60);
 		}
 
 	}
+
+	@property SDL_Renderer* Renderer() { return renderer; }
+	@property ref EngineState State() { return state; }
+	@property double CurrentTick() { return tick; }
+	@property int FPS() { return currentFPS; }
+	@property double FPS_MS() { return currentFPS_MS; }
 private:
 	Log log;
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+	EngineState state;
 
 	uint lastTime;
 	int frame;
 	
 	double tick;
+
+	int currentFPS;
+	double currentFPS_MS;
 
 	void loadLibraries() {
 		DerelictSDL2.load();
