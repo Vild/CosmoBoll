@@ -1,9 +1,10 @@
 {
-	"name": "codenamespace",
-	"description": "A minimal D application.",
+	"name": "space",
+	"description": "A space game",
 	"copyright": "Copyright © 2014, wildn00b",
 	"authors": ["wildn00b"],
 	"dependencies": {
 		"derelict-sdl2": ">=1.2.8"
-	}
+	},
+	"lflags" : ["-lncurses"]
 }

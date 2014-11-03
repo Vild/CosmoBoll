@@ -1,3 +1,5 @@
 .dub
 dub.selections.json
-codenamespace
+
+dub.userprefs
+space.log
