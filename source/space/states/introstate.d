@@ -10,6 +10,7 @@ import space.io.keyboard;
 import space.states.mainmenustate;
 
 import derelict.sdl2.sdl;
+import space.log.log;
 
 class IntroState : EngineState {
 public:
@@ -34,12 +35,8 @@ public:
 		Mouse m = engine.MouseState;
 		Keyboard k = engine.KeyboardState;
 		if (m.JustClicked || fade == 0 ||
-		    k.isDown(SDL_SCANCODE_SPACE) || k.isDown(SDL_SCANCODE_RETURN)) {
-			engine.State = new MainMenuState(engine);
-			/*import space.utils.mathhelper;
-			if (MathHelper.CheckCollision(middle, SDL_Rect(m.X, m.Y, 1, 1)))
-				engine.State = null;*/
-		}
+		    k.isDown(SDL_SCANCODE_SPACE) || k.isDown(SDL_SCANCODE_RETURN))
+			engine.ChangeState!MainMenuState(engine);
 	}
 	override void Render() {
 		tex.Render(null, &engine.Size());

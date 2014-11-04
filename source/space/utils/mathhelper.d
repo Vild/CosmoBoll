@@ -19,3 +19,20 @@ class MathHelper {
 	}
 }
 
+
+struct SDL_Rectd {
+	double x, y;
+	double w, h;
+
+	this(SDL_Rect* a) {
+		this.x = a.x;
+		this.y = a.y;
+		this.w = a.w;
+		this.h = a.h;
+	}
+
+	SDL_Rect Rect() {
+		import std.math : round;
+		return SDL_Rect(cast(int)x.round, cast(int)y.round, cast(int)w.round, cast(int)h.round);
+	}
+}

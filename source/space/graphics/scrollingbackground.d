@@ -1,0 +1,74 @@
+﻿module space.graphics.scrollingbackground;
+
+import space.engine;
+import space.graphics.texture;
+import space.utils.mathhelper;
+import space.log.log;
+
+import derelict.sdl2.sdl;
+
+import std.random;
+import std.math;
+
+class ScrollingBackground {
+public:
+	this(Engine* engine, string background, double scale = 10) {
+		this.engine = engine;
+		this.bg = new Texture(engine.Renderer, background);
+		this.bgPos1 = this.bgPos2 = bg.Size;
+		this.bgPos2.x = bgPos2.w;
+		this.scale = scale;
+
+		for(int i = 0; i < boxes.length; i++)
+			boxes[i] = box(SDL_Point(cast(int)uniform(0, engine.Size.w), cast(int)uniform(0, engine.Size.h)), uniform(0.0, 1.0));
+	}
+
+	void Update(double delta) {
+		bgPos1.x -= delta*scale;
+		bgPos2.x -= delta*scale;
+		
+		if (bgPos1.x <= -1 * bgPos1.w)
+			bgPos1.x += bgPos1.w * 2;
+		if (bgPos2.x <= -1 * bgPos2.w)
+			bgPos2.x += bgPos2.w * 2;
+
+		foreach(ref b; boxes) {
+			b.life -= delta/2;
+			if (b.life <= 0) {
+				b.pos.x = cast(int)uniform(0, engine.Size.w);
+				b.pos.y = cast(int)uniform(0, engine.Size.h);
+				b.life = 1.0;
+			}
+		}
+	}
+
+	void Render() {
+		SDL_Rect tmp = bgPos1.Rect();
+		bg.Render(null, &tmp);
+		tmp = bgPos2.Rect();
+		bg.Render(null, &tmp);
+
+		//SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, 255);
+		foreach(b; boxes) {
+			SDL_Rect pos = SDL_Rect(b.pos.x, b.pos.y, 16, 16);
+			SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, cast(ubyte)(255*b.life));
+			SDL_RenderFillRect(engine.Renderer, &pos);
+		}
+
+	}
+
+	@property ref double Scale() { return scale; }
+private:
+	Engine* engine;
+	Texture bg;
+	SDL_Rectd bgPos1;
+	SDL_Rectd bgPos2;
+	double scale;
+
+	box[400] boxes;
+	struct box {
+		SDL_Point pos;
+		double life;
+	}
+}
+

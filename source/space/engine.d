@@ -27,6 +27,7 @@ public:
 		initSDL(title, width, height, fullscreen);
 		keyboard = new Keyboard();
 		mouse = new Mouse();
+		this.fpslock = false;
 	}
 
 	~this() {
@@ -67,6 +68,14 @@ public:
 				else if (event.type == SDL_KEYDOWN) {
 					if (event.key.keysym.sym == SDLK_ESCAPE)
 						done = true;
+				} else if (event.type == SDL_WINDOWEVENT) {
+					if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+						fpslock = true;
+						log.Info!Renderer("Locked");
+					} else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
+						fpslock = false;
+						log.Info!Renderer("Unlocked");
+					}
 				}
 			}
 
@@ -89,15 +98,21 @@ public:
 				frame = 0;
 				lastTime += 1000;
 			}
+			if (fpslock)
+				SDL_Delay(1000/10); //Lock to 10 fps
 		}
 
 	}
 
 	@property SDL_Renderer* Renderer() { return renderer; }
 	@property EngineState State() { return state; }
-	@property EngineState State(EngineState state) {
-		this.newstate = state;
-		return state;
+	void ChangeState(T, Args...)(Args args) {
+		//TODO: implement loading image
+		static assert(__traits(compiles, new T(args)));
+		this.newstate = new T(args);
+	}
+	@property void Quit() {
+		this.newstate = null;
 	}
 	@property double CurrentTick() { return tick; }
 	@property int FPS() { return currentFPS; }
@@ -115,7 +130,7 @@ private:
 	EngineState newstate;
 	Mouse mouse;
 	Keyboard keyboard;
-
+	bool fpslock;
 
 	SDL_Rect size;
 
