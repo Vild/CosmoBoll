@@ -14,8 +14,8 @@ class ScrollingBackground {
 public:
 	this(Engine* engine, string background, double scale = 10) {
 		this.engine = engine;
-		this.bg = new Texture(engine.Renderer, background);
-		this.bgPos1 = this.bgPos2 = bg.Size;
+		this.bg = new Texture(engine.Renderer, null, background);
+		this.bgPos1 = this.bgPos2 = *bg.Size;
 		this.bgPos2.x = bgPos2.w;
 		this.scale = scale;
 
@@ -43,13 +43,11 @@ public:
 	}
 
 	void Render() {
-		SDL_Rect tmp = bgPos1.Rect();
-		bg.Render(null, &tmp);
-		tmp = bgPos2.Rect();
-		bg.Render(null, &tmp);
+		bg.Render(null, &bgPos1, false);
+		bg.Render(null, &bgPos2, false);
 
 		//SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, 255);
-		foreach(b; boxes) {
+		foreach(b; boxes) { //Todo: change to BlockTexture
 			SDL_Rect pos = SDL_Rect(b.pos.x, b.pos.y, 16, 16);
 			SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, cast(ubyte)(255*b.life));
 			SDL_RenderFillRect(engine.Renderer, &pos);

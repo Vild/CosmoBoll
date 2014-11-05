@@ -10,7 +10,7 @@ import space.io.mouse;
 import space.states.gamestate;
 import space.graphics.scrollingbackground;
 import derelict.sdl2.sdl;
-
+import space.utils.mathhelper;
 
 class MainMenuState : EngineState {
 public:
@@ -19,11 +19,11 @@ public:
 		song = new Song("res/song/mainmenu.mp3");
 		bg = new ScrollingBackground(engine, "res/img/background.png");
 		title = new Text(engine.Renderer, "\x01 Cosmo Boll \x02", 10);
-		titlePos = SDL_Rect((engine.Size.w/2)-cast(int)(title.Text.length*title.Scale*8/2), 100, cast(int)(title.Text.length*title.Scale*8), cast(int)(title.Scale*8));
+		titlePos = SDL_Rectd((engine.Size.w/2)-(title.Size.w/2), 100, title.Size.w, title.Size.h);
 		//titlePos = SDL_Rect((engine.Size.w/2)-cast(int)(800/2), 10, cast(int)(800), cast(int)(250));
-		buttonTex = new Texture(engine.Renderer, "res/img/mainmenu_button.png");
+		buttonTex = new Texture(engine.Renderer, null, "res/img/mainmenu_button.png");
 
-		SDL_Rect pos = SDL_Rect((engine.Size.w/2)-(buttonTex.Size.w/2), 0/*placeholder*/, buttonTex.Size.w, buttonTex.Size.h);
+		SDL_Rectd pos = SDL_Rectd((engine.Size.w/2)-(buttonTex.Size.w/2), 0/*placeholder*/, buttonTex.Size.w, buttonTex.Size.h);
 		pos.y += pos.h + 250;
 		addButton(0, pos, "Spela", 8, &onClick);
 		pos.y += pos.h + 100;
@@ -47,7 +47,7 @@ public:
 		if (m.JustClicked) {
 			import space.utils.mathhelper;
 			foreach(ref Button b; buttons)
-				if (MathHelper.CheckCollision(b.hitbox, SDL_Rect(m.X, m.Y, 1, 1)))
+				if (MathHelper.CheckCollision(b.hitbox, SDL_Rectd(m.X, m.Y, 1, 1)))
 					b.onClick(b);
 		}
 
@@ -83,7 +83,7 @@ private:
 	Song song;
 	ScrollingBackground bg;
 	Text title;
-	SDL_Rect titlePos;
+	SDL_Rectd titlePos;
 
 	Texture buttonTex;
 	Button[] buttons;
@@ -92,14 +92,14 @@ private:
 
 	static struct Button {
 		int id;
-		SDL_Rect hitbox;
+		SDL_Rectd hitbox;
 		Text text;
-		SDL_Rect textPos;
+		SDL_Rectd textPos;
 		onClick_f onClick;
 	}
 
-	void addButton(int id, SDL_Rect pos, string str, double size, onClick_f onClick) {
-		SDL_Rect textPos;
+	void addButton(int id, SDL_Rectd pos, string str, double size, onClick_f onClick) {
+		SDL_Rectd textPos;
 		Text text = new Text(engine.Renderer, str, size);
 		textPos.x = pos.x + (pos.w/2) - (text.Size.w/2);
 		textPos.y = pos.y + (pos.h/2) - (text.Size.h/2);

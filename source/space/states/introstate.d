@@ -16,7 +16,7 @@ class IntroState : EngineState {
 public:
 	this(Engine* engine) {
 		super(engine);
-		tex = new Texture(engine.Renderer, "res/img/intro.png");
+		tex = new Texture(engine.Renderer, null, "res/img/intro.png");
 		fade = 1.0;
 	}
 	

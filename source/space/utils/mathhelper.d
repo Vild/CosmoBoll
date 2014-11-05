@@ -1,21 +1,47 @@
 ﻿module space.utils.mathhelper;
 
 import derelict.sdl2.sdl;
+import std.math;
+import std.algorithm;
 
 class MathHelper {
-	static bool CheckCollision(SDL_Rect rect1, SDL_Rect rect2){
-		int left1 = rect1.x;
-		int right1 = rect1.x + rect1.w;
-		int top1 = rect1.y;
-		int bottom1 = rect1.y + rect1.h;
+	static bool CheckCollision(SDL_Rectd rect1, SDL_Rectd rect2){
+		double left1 = rect1.x;
+		double right1 = rect1.x + rect1.w;
+		double top1 = rect1.y;
+		double bottom1 = rect1.y + rect1.h;
 
-		int left2 = rect2.x;
-		int right2 = rect2.x + rect2.w;
-		int top2 = rect2.y;
-		int bottom2 = rect2.y + rect2.h;
+		double left2 = rect2.x;
+		double right2 = rect2.x + rect2.w;
+		double top2 = rect2.y;
+		double bottom2 = rect2.y + rect2.h;
 
 
 		return !((left1 > right2) || (right1 < left2) || (top1 > bottom2) || (bottom1 < top2));
+	}
+
+	static SDL_Pointd GetMiddle(SDL_Pointd p1, SDL_Pointd p2) {
+		double xl = min(p1.x, p2.x);
+		double xg = max(p1.x, p2.x);
+		double x = (xg-xl)/2+xl;
+
+		double yl = min(p1.y, p2.y);
+		double yg = max(p1.y, p2.y);
+		double y = (yg-yl)/2+yl;
+
+		return SDL_Pointd(x, y);
+	}
+
+	static double LengthTo(SDL_Pointd p1, SDL_Pointd p2) {
+		double xl = min(p1.x, p2.x);
+		double xg = max(p1.x, p2.x);
+		double xd = xg-xl;
+		
+		double yl = min(p1.y, p2.y);
+		double yg = max(p1.y, p2.y);
+		double yd = yg-yl;
+
+		return sqrt(xd*xd + yd*yd);
 	}
 }
 
@@ -31,8 +57,52 @@ struct SDL_Rectd {
 		this.h = a.h;
 	}
 
+	this(SDL_Rectd* a) {
+		this.x = a.x;
+		this.y = a.y;
+		this.w = a.w;
+		this.h = a.h;
+	}
+
+	this(double x, double y, double w, double h) {
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+	}
+
 	SDL_Rect Rect() {
-		import std.math : round;
-		return SDL_Rect(cast(int)x.round, cast(int)y.round, cast(int)w.round, cast(int)h.round);
+		return SDL_Rect(cast(int)x.lround, cast(int)y.lround, cast(int)w.lround, cast(int)h.lround);
+	}
+
+	SDL_Pointd Pointd() {
+		return SDL_Pointd(x, y);
+	}
+}
+
+struct SDL_Pointd {
+	double x, y;
+
+	this(SDL_Point* p) {
+		this.x = p.x;
+		this.y = p.y;
+	}
+
+	this(SDL_Pointd* p) {
+		this.x = p.x;
+		this.y = p.y;
+	}
+
+	this(double x, double y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	SDL_Point Point() {
+		return SDL_Point(cast(int)x.lround, cast(int)y.lround);
+	}
+
+	SDL_Rectd Rect(double w = 0, double h = 0) {
+		return SDL_Rectd(x, y, w, h);
 	}
 }
