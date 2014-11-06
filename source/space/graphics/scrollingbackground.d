@@ -15,12 +15,13 @@ public:
 	this(Engine* engine, string background, double scale = 10) {
 		this.engine = engine;
 		this.bg = new Texture(engine.Renderer, null, background);
-		this.bgPos1 = this.bgPos2 = *bg.Size;
+		this.bgPos1 = bg.Size;
+		this.bgPos2 = bg.Size;
 		this.bgPos2.x = bgPos2.w;
 		this.scale = scale;
 
 		for(int i = 0; i < boxes.length; i++)
-			boxes[i] = box(SDL_Point(cast(int)uniform(0, engine.Size.w), cast(int)uniform(0, engine.Size.h)), uniform(0.0, 1.0));
+			boxes[i] = box(SDL_Pointd(uniform(0, engine.Size.w), uniform(0, engine.Size.h)), uniform(0.0, 1.0));
 	}
 
 	void Update(double delta) {
@@ -48,7 +49,7 @@ public:
 
 		//SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, 255);
 		foreach(b; boxes) { //Todo: change to BlockTexture
-			SDL_Rect pos = SDL_Rect(b.pos.x, b.pos.y, 16, 16);
+			SDL_Rect pos = SDL_Rectd(b.pos.x, b.pos.y, 16, 16).Rect();
 			SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, cast(ubyte)(255*b.life));
 			SDL_RenderFillRect(engine.Renderer, &pos);
 		}
@@ -65,7 +66,7 @@ private:
 
 	box[400] boxes;
 	struct box {
-		SDL_Point pos;
+		SDL_Pointd pos;
 		double life;
 	}
 }

@@ -20,14 +20,14 @@ class MathHelper {
 		return !((left1 > right2) || (right1 < left2) || (top1 > bottom2) || (bottom1 < top2));
 	}
 
-	static SDL_Pointd GetMiddle(SDL_Pointd p1, SDL_Pointd p2) {
+	static SDL_Pointd GetMiddleDiff(SDL_Pointd p1, SDL_Pointd p2) {
 		double xl = min(p1.x, p2.x);
 		double xg = max(p1.x, p2.x);
-		double x = (xg-xl)/2+xl;
+		double x = ((xg-xl)/2);
 
 		double yl = min(p1.y, p2.y);
 		double yg = max(p1.y, p2.y);
-		double y = (yg-yl)/2+yl;
+		double y = ((yg-yl)/2);
 
 		return SDL_Pointd(x, y);
 	}

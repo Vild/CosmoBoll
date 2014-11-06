@@ -103,6 +103,8 @@ private:
 		Text text = new Text(engine.Renderer, str, size);
 		textPos.x = pos.x + (pos.w/2) - (text.Size.w/2);
 		textPos.y = pos.y + (pos.h/2) - (text.Size.h/2);
+		textPos.w = 0;
+		textPos.h = 0;
 		text.SetColor(255, 190, 10);
 
 		buttons ~= Button(id, pos, text, textPos, onClick);

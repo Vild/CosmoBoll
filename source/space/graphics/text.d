@@ -24,8 +24,8 @@ public:
 		src.w = font.Size.w / 16;
 		src.h = font.Size.h / 16;
 		SDL_Rectd ndst = SDL_Rectd(dst);
-		ndst.w *= scale;
-		ndst.h *= scale;
+		ndst.w = src.w * scale;
+		ndst.h = src.h * scale;
 
 		foreach(char c; text) {
 			//Font image is a grid of 16x16=256

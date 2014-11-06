@@ -13,7 +13,7 @@ int main(string[] args){
 	Log log = Log.MainLogger;
 	log.LogFile = File("space.log", "a");
 
-	Engine engine = new Engine("Cosmo Boll", 1366, 768, true);
+	Engine engine = new Engine("Cosmo Boll", 1366, 768, false);
 	engine.ChangeState!IntroState(&engine);
 	engine.MainLoop();
 
