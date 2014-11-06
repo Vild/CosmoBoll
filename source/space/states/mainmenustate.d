@@ -18,10 +18,10 @@ public:
 		super(engine);
 		song = new Song("res/song/mainmenu.mp3");
 		bg = new ScrollingBackground(engine, "res/img/background.png");
-		title = new Text(engine.Renderer, "\x01 Cosmo Boll \x02", 10);
+		title = new Text(engine, "\x01 Cosmo Boll \x02", 10);
 		titlePos = SDL_Rectd((engine.Size.w/2)-(title.Size.w/2), 100, title.Size.w, title.Size.h);
 		//titlePos = SDL_Rect((engine.Size.w/2)-cast(int)(800/2), 10, cast(int)(800), cast(int)(250));
-		buttonTex = new Texture(engine.Renderer, null, "res/img/mainmenu_button.png");
+		buttonTex = new Texture(engine, null, "res/img/mainmenu_button.png");
 
 		SDL_Rectd pos = SDL_Rectd((engine.Size.w/2)-(buttonTex.Size.w/2), 0/*placeholder*/, buttonTex.Size.w, buttonTex.Size.h);
 		pos.y += pos.h + 250;
@@ -100,7 +100,7 @@ private:
 
 	void addButton(int id, SDL_Rectd pos, string str, double size, onClick_f onClick) {
 		SDL_Rectd textPos;
-		Text text = new Text(engine.Renderer, str, size);
+		Text text = new Text(engine, str, size);
 		textPos.x = pos.x + (pos.w/2) - (text.Size.w/2);
 		textPos.y = pos.y + (pos.h/2) - (text.Size.h/2);
 		textPos.w = 0;

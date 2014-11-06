@@ -14,7 +14,7 @@ class ScrollingBackground {
 public:
 	this(Engine* engine, string background, double scale = 10) {
 		this.engine = engine;
-		this.bg = new Texture(engine.Renderer, null, background);
+		this.bg = new Texture(engine, null, background);
 		this.bgPos1 = bg.Size;
 		this.bgPos2 = bg.Size;
 		this.bgPos2.x = bgPos2.w;

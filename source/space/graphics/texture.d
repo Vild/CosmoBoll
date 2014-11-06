@@ -8,13 +8,15 @@ import derelict.sdl2.image;
 import space.log.log;
 import space.utils.renderhelper;
 import space.utils.mathhelper;
+import space.engine;
 
 class Texture {
 public:
-	this(SDL_Renderer* renderer, RenderHelper* renderHelper, string file) {
-		this.renderer = renderer;
+	this(Engine* engine, RenderHelper* renderHelper, string file) {
+		this.renderer = engine.Renderer;
 		this.renderHelper = renderHelper;
 		loadFile(file);
+		ORIGO_POSITION = engine.Size/2;
 	}
 
 	~this() {
@@ -25,9 +27,9 @@ public:
 		SDL_Rect nsrc = (src is null) ? size.Rect() : src.Rect();
 		SDL_Rect ndst = dst.Rect();
 		if (renderHelper !is null && correction) {
-			SDL_Pointd mid = renderHelper.Middle;
+			SDL_Pointd mid = renderHelper.PositionDiff;
 			double scale = renderHelper.Scale;
-			ndst = SDL_Rectd((dst.x - mid.x)*scale, (dst.y - mid.y)*scale, dst.w*scale, dst.h*scale).Rect();
+			ndst = SDL_Rectd(((dst.x+ORIGO_POSITION.x)*scale) - mid.x, ((dst.y+ORIGO_POSITION.y)*scale) - mid.y, dst.w*scale, dst.h*scale).Rect();
 		}
 		SDL_RenderCopyEx(renderer, texture, &nsrc, &ndst, angle, null, flip);
 	}
@@ -46,9 +48,11 @@ public:
 protected:
 	SDL_Renderer* renderer;
 	RenderHelper* renderHelper;
-	this(SDL_Renderer* renderer, RenderHelper* renderHelper) {
-		this.renderer = renderer;
+	SDL_Pointd ORIGO_POSITION;
+	this(Engine* engine, RenderHelper* renderHelper) {
+		this.renderer = engine.Renderer;
 		this.renderHelper = renderHelper;
+		ORIGO_POSITION = engine.Size/2;
 	}
 
 private:
@@ -70,15 +74,15 @@ private:
 
 class BlockTexture : Texture { //TODO: Remove/Change?, i'm too lazy now
 public:
-	this(SDL_Renderer* renderer, RenderHelper* renderHelper, SDL_Color color) {
-		super(renderer, renderHelper);
+	this(Engine* engine, RenderHelper* renderHelper, SDL_Color color) {
+		super(engine, renderHelper);
 		this.color = color;
 	}
 
 	override void Render(SDL_Rectd* src, SDL_Rectd* dst, bool correction = true, double angle = 0.0, SDL_RendererFlip flip = SDL_FLIP_NONE) {
-		SDL_Pointd mid = renderHelper.Middle;
+		SDL_Pointd mid = renderHelper.PositionDiff;
 		double scale = renderHelper.Scale;
-		SDL_Rect ndst = (renderHelper !is null && correction) ? SDL_Rectd((dst.x - mid.x)*scale, (dst.y - mid.y)*scale, dst.w*scale, dst.h*scale).Rect() : dst.Rect();
+		SDL_Rect ndst = (renderHelper !is null && correction) ? SDL_Rectd(((dst.x+ORIGO_POSITION.x)*scale) - mid.x, ((dst.y+ORIGO_POSITION.y)*scale) - mid.y, dst.w*scale, dst.h*scale).Rect() : dst.Rect();
 		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 		SDL_RenderFillRect(renderer, &ndst);
 	}

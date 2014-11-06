@@ -5,11 +5,12 @@ import space.log.log;
 
 import derelict.sdl2.sdl;
 import space.utils.mathhelper;
+import space.engine;
 
 class Text {
 public:
-	this(SDL_Renderer* renderer, string text, double scale = 1.0) {
-		font = new Texture(renderer, null, "res/img/font.png");
+	this(Engine* engine, string text, double scale = 1.0) {
+		font = new Texture(engine, null, "res/img/font.png");
 
 		this.text = text;
 		this.scale = scale;

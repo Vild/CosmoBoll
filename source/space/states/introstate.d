@@ -16,7 +16,7 @@ class IntroState : EngineState {
 public:
 	this(Engine* engine) {
 		super(engine);
-		tex = new Texture(engine.Renderer, null, "res/img/intro.png");
+		tex = new Texture(engine, null, "res/img/intro.png");
 		fade = 1.0;
 	}
 	
@@ -39,7 +39,7 @@ public:
 			engine.ChangeState!MainMenuState(engine);
 	}
 	override void Render() {
-		tex.Render(null, &engine.Size());
+		tex.Render(null, &engine.SizeRect());
 	}
 	
 private:

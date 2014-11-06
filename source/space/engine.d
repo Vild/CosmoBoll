@@ -24,7 +24,8 @@ public:
 		state = null;
 		newstate = null;
 		loadLibraries();
-		this.size = SDL_Rectd(0, 0, width, height);
+		this.size = SDL_Pointd(width, height);
+		this.sizerect = SDL_Rectd(width, height, width, height);
 		initSDL(title, width, height, fullscreen);
 		keyboard = new Keyboard();
 		mouse = new Mouse();
@@ -121,7 +122,8 @@ public:
 	@property Mouse MouseState() { return mouse; };
 	@property Keyboard KeyboardState() { return keyboard; }
 
-	@property ref SDL_Rectd Size() { return size; }
+	@property ref SDL_Pointd Size() { return size; }
+	@property ref SDL_Rectd SizeRect() { return sizerect; }
 private:
 	Log log;
 
@@ -133,7 +135,8 @@ private:
 	Keyboard keyboard;
 	bool fpslock;
 
-	SDL_Rectd size;
+	SDL_Pointd size;
+	SDL_Rectd sizerect;
 
 	uint lastTime;
 	int frame;

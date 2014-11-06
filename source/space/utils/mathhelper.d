@@ -3,6 +3,7 @@
 import derelict.sdl2.sdl;
 import std.math;
 import std.algorithm;
+import std.traits;
 
 class MathHelper {
 	static bool CheckCollision(SDL_Rectd rect1, SDL_Rectd rect2){
@@ -71,6 +72,22 @@ struct SDL_Rectd {
 		this.h = h;
 	}
 
+	SDL_Rectd opUnary(string s)() if (s == "-") {
+		return SDL_Rectd(-x, -y, -w, -h);
+	}
+
+	SDL_Rectd opBinary(string op)(SDL_Rectd b) {
+		return SDL_Rectd(mixin("x"~op~"b.x"), mixin("y"~op~"b.y"), mixin("w"~op~"b.w"), mixin("h"~op~"b.h"));
+	}
+
+	SDL_Rectd opBinary(string op)(SDL_Pointd b) {
+		return SDL_Rectd(mixin("x"~op~"b.x"), mixin("y"~op~"b.y"), w, h);
+	}
+
+	SDL_Pointd opBinary(string op, T)(T b) if (isNumeric!T) {
+		return SDL_Rectd(mixin("x"~op~"b"), mixin("y"~op~"b"), mixin("w"~op~"b"), mixin("h"~op~"b"), );
+	}
+
 	SDL_Rect Rect() {
 		return SDL_Rect(cast(int)x.lround, cast(int)y.lround, cast(int)w.lround, cast(int)h.lround);
 	}
@@ -82,6 +99,10 @@ struct SDL_Rectd {
 
 struct SDL_Pointd {
 	double x, y;
+
+
+	@property ref double w() { return x; }
+	@property ref double h() { return y; }
 
 	this(SDL_Point* p) {
 		this.x = p.x;
@@ -96,6 +117,18 @@ struct SDL_Pointd {
 	this(double x, double y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	SDL_Pointd opUnary(string s)() if (s == "-") {
+		return SDL_Pointd(-x, -y);
+	}
+	
+	SDL_Pointd opBinary(string op)(SDL_Pointd b) {
+		return SDL_Pointd(mixin("x"~op~"b.x"), mixin("y"~op~"b.y"));
+	}
+
+	SDL_Pointd opBinary(string op, T)(T b) if (isNumeric!T) {
+		return SDL_Pointd(mixin("x"~op~"b"), mixin("y"~op~"b"));
 	}
 
 	SDL_Point Point() {
