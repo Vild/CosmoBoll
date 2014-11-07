@@ -162,6 +162,7 @@ private:
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 		if (renderer is null)
 			log.Critical!initSDL("SDL_CreateRenderer(): %s", to!string(SDL_GetError));
+		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 		SDL_DisableScreenSaver();
 
 		if ((IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG) != IMG_INIT_PNG)
@@ -172,6 +173,7 @@ private:
 
 		if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) != 0)
 			log.Critical!initSDL("Mix_OpenAudio(): %s", to!string(Mix_GetError));
+
 	}
 }
 

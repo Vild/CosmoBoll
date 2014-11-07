@@ -69,6 +69,9 @@ public:
 		float middleY = boxY + (boxHeight / 2);
 		positionDiff.x = middleX-(engine.Size.w/2);
 		positionDiff.y = min(middleY-(engine.Size.h/2), 0);
+
+		positionDiff = SDL_Pointd(0, 0);
+		scale = 1;
 	}
 
 	@property SDL_Pointd PositionDiff() { return positionDiff; }

@@ -16,7 +16,7 @@ public:
 		this.renderer = engine.Renderer;
 		this.renderHelper = renderHelper;
 		loadFile(file);
-		ORIGO_POSITION = engine.Size/2;
+		ORIGO_POSITION = SDL_Pointd(0, 0); //engine.Size/2;
 	}
 
 	~this() {
@@ -52,7 +52,7 @@ protected:
 	this(Engine* engine, RenderHelper* renderHelper) {
 		this.renderer = engine.Renderer;
 		this.renderHelper = renderHelper;
-		ORIGO_POSITION = engine.Size/2;
+		ORIGO_POSITION = SDL_Pointd(0, 0);//engine.Size/2;
 	}
 
 private:
