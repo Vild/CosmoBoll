@@ -98,7 +98,7 @@ public:
 				frame = 0;
 				lastTime += 1000;
 			}
-			if (true && fpslock)
+			if (fpslock)
 				SDL_Delay(1000/10); //Lock to 10 fps
 		}
 
@@ -171,6 +171,11 @@ private:
 
 		if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) != 0)
 			log.Critical!initSDL("Mix_OpenAudio(): %s", to!string(Mix_GetError));
+
+		SDL_Surface* icon = IMG_Load(toStringz("res/img/icon.png"));
+
+		SDL_SetWindowIcon(window, icon);
+		SDL_FreeSurface(icon);
 
 	}
 }
