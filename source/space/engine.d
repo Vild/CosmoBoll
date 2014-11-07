@@ -1,21 +1,19 @@
 ﻿module space.engine;
-import std.string : toStringz;
-import std.conv : to;
-import std.datetime;
-
-import derelict.sdl2.sdl;
 import derelict.sdl2.image;
 import derelict.sdl2.mixer;
+import derelict.sdl2.sdl;
 import derelict.sdl2.ttf;
-
-import space.graphics.texture;
-import space.music.song;
-import space.graphics.text;
-import space.log.log;
 import space.enginestate;
+import space.graphics.text;
+import space.graphics.texture;
 import space.io.keyboard;
 import space.io.mouse;
+import space.log.log;
+import space.music.song;
 import space.utils.mathhelper;
+import std.conv : to;
+import std.datetime;
+import std.string : toStringz;
 
 class Engine {
 public:
@@ -25,7 +23,7 @@ public:
 		newstate = null;
 		loadLibraries();
 		this.size = SDL_Pointd(width, height);
-		this.sizerect = SDL_Rectd(width, height, width, height);
+		this.sizerect = SDL_Rectd(0, 0, width, height);
 		initSDL(title, width, height, fullscreen);
 		keyboard = new Keyboard();
 		mouse = new Mouse();
@@ -100,7 +98,7 @@ public:
 				frame = 0;
 				lastTime += 1000;
 			}
-			if (fpslock)
+			if (true && fpslock)
 				SDL_Delay(1000/10); //Lock to 10 fps
 		}
 

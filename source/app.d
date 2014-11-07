@@ -1,10 +1,9 @@
 module app;
-import std.stdio;
-import space.log.log;
 import space.engine;
+import space.log.log;
 import space.states.introstate;
 import std.math;
-
+import std.stdio;
 
 int main(string[] args){
 	FloatingPointControl fpctrl;

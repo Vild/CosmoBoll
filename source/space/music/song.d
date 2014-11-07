@@ -1,8 +1,8 @@
 ﻿module space.music.song;
 
 import derelict.sdl2.mixer;
-import std.string : toStringz;
 import space.log.log;
+import std.string : toStringz;
 
 class Song {
 public:

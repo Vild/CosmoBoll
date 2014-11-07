@@ -1,14 +1,13 @@
 ﻿module space.graphics.texture;
 
-import std.string : toStringz;
-
-import derelict.sdl2.sdl;
 import derelict.sdl2.image;
-
-import space.log.log;
-import space.utils.renderhelper;
-import space.utils.mathhelper;
+import derelict.sdl2.sdl;
 import space.engine;
+import space.log.log;
+import space.utils.mathhelper;
+import space.utils.renderhelper;
+import std.string : toStringz;
+import space.physics.aabb;
 
 class Texture {
 public:
@@ -21,6 +20,10 @@ public:
 
 	~this() {
 		SDL_DestroyTexture(texture);
+	}
+
+	void Render(ref SDL_Rectd src, ref SDL_Rectd dst, bool correction = true, double angle = 0.0, SDL_RendererFlip flip = SDL_FLIP_NONE) {
+		Render(&src, &dst, correction, angle, flip);
 	}
 
 	void Render(SDL_Rectd* src, SDL_Rectd* dst, bool correction = true, double angle = 0.0, SDL_RendererFlip flip = SDL_FLIP_NONE) {

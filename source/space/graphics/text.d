@@ -1,11 +1,10 @@
 ﻿module space.graphics.text;
 
+import derelict.sdl2.sdl;
+import space.engine;
 import space.graphics.texture;
 import space.log.log;
-
-import derelict.sdl2.sdl;
 import space.utils.mathhelper;
-import space.engine;
 
 class Text {
 public:

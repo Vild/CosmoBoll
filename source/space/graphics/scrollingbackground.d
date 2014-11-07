@@ -1,14 +1,12 @@
 ﻿module space.graphics.scrollingbackground;
 
+import derelict.sdl2.sdl;
 import space.engine;
 import space.graphics.texture;
-import space.utils.mathhelper;
 import space.log.log;
-
-import derelict.sdl2.sdl;
-
-import std.random;
+import space.utils.mathhelper;
 import std.math;
+import std.random;
 
 class ScrollingBackground {
 public:

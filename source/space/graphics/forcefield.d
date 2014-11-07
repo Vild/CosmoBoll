@@ -1,12 +1,11 @@
 ﻿module space.graphics.forcefield;
 
+import derelict.sdl2.sdl;
 import space.engine;
 import space.graphics.texture;
-import space.utils.mathhelper;
 import space.log.log;
+import space.utils.mathhelper;
 import space.utils.renderhelper;
-
-import derelict.sdl2.sdl;
 
 class ForceField {
 public:

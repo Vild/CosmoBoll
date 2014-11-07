@@ -1,8 +1,8 @@
 ﻿module space.utils.mathhelper;
 
 import derelict.sdl2.sdl;
-import std.math;
 import std.algorithm;
+import std.math;
 import std.traits;
 
 class MathHelper {

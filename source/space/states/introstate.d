@@ -28,9 +28,7 @@ public:
 		fade -= delta / 6;
 		if (fade < 0)
 			fade = 0;
-		tex.SetAlpha(fade);
-		//count += delta*8;
-		//fpstext.Text = format("%d fps, %f ms/frame", engine.FPS, engine.FPS_MS);
+		//tex.SetAlpha(fade);
 		
 		Mouse m = engine.MouseState;
 		Keyboard k = engine.KeyboardState;
@@ -39,7 +37,7 @@ public:
 			engine.ChangeState!MainMenuState(engine);
 	}
 	override void Render() {
-		tex.Render(null, &engine.SizeRect());
+		tex.Render(null, &engine.SizeRect(), false);
 	}
 	
 private:

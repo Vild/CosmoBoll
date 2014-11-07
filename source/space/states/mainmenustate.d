@@ -1,15 +1,16 @@
 ﻿module space.states.mainmenustate;
 
-import space.log.log;
+import derelict.sdl2.sdl;
 import space.engine;
 import space.enginestate;
-import space.graphics.texture;
-import space.graphics.text;
-import space.music.song;
-import space.io.mouse;
-import space.states.gamestate;
 import space.graphics.scrollingbackground;
-import derelict.sdl2.sdl;
+import space.graphics.text;
+import space.graphics.texture;
+import space.io.keyboard;
+import space.io.mouse;
+import space.log.log;
+import space.music.song;
+import space.states.gamestate;
 import space.utils.mathhelper;
 
 class MainMenuState : EngineState {
@@ -44,12 +45,16 @@ public:
 		bg.Update(delta);
 
 		Mouse m = engine.MouseState;
+		Keyboard k = engine.KeyboardState;
 		if (m.JustClicked) {
 			import space.utils.mathhelper;
 			foreach(ref Button b; buttons)
 				if (MathHelper.CheckCollision(b.hitbox, SDL_Rectd(m.X, m.Y, 1, 1)))
 					b.onClick(b);
 		}
+
+		if (k.isDown(SDL_SCANCODE_SPACE))
+		    engine.ChangeState!GameState(engine);
 
 	}
 	override void Render() {

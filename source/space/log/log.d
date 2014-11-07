@@ -4,10 +4,10 @@ version(Posix)
 	import space.log.terminal : stdout, stderr, Color;
 else
 	import std.stdio : stdout, stderr;
-import std.traits : isSomeChar, isAggregateType, isSomeString, isIntegral, isBoolean, fullyQualifiedName;
 import std.conv : toTextRange;
-import std.string : format;
 import std.stdio : File;
+import std.string : format;
+import std.traits : isSomeChar,isAggregateType,isSomeString,isIntegral,isBoolean,fullyQualifiedName;
 
 enum LogLevel {
 	VERBOSE,

@@ -1,22 +1,24 @@
 ﻿module space.utils.renderhelper;
 
 import derelict.sdl2.sdl;
+import space.engine;
+import space.log.log;
 import space.utils.mathhelper;
 import std.algorithm;
-import space.log.log;
-import space.engine;
 import std.math;
 
 class RenderHelper {
 public:
 	this(Engine* engine) {
 		this.engine = engine;
+		this.scale = 1;
+		this.positionDiff = SDL_Pointd(0, 0);
 	}
 
 	void Update(SDL_Rectd p1, SDL_Rectd p2) {
 		const double CAMERA_FOCUS_PADDING = 50;
 
-		/* 1) Compute the bounding box. */
+		/* 1) Compute the bounding this. */
 		
 		float boxX	= p1.x;
 		float boxY	= p1.y; 
@@ -63,7 +65,7 @@ public:
 		
 		scale = min(1-scale, 1.0f); // Don't let scale factor be less than 1.0f.
 		
-		/* 5) Final step, compute the center of the box. */
+		/* 5) Final step, compute the center of the this. */
 		
 		float middleX = boxX + (boxWidth / 2);
 		float middleY = boxY + (boxHeight / 2);
