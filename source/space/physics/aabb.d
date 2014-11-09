@@ -18,7 +18,10 @@ public:
 		this.speed = speed;
 	}
 
-	void Update(double delta, AABB[] hitboxes, SDL_Pointd jumpyness = SDL_Pointd(0, 6)) {
+	void Update(double delta, double dvx, double dvy, AABB[] hitboxes, SDL_Pointd jumpyness = SDL_Pointd(0, 6)) {
+		vx += dvx;
+		vy += dvy;
+
 		vx = max(min(vx, 400), -400);
 		vy = max(min(vy, 400), -400);
 
@@ -26,7 +29,9 @@ public:
 
 		foreach(ref box; hitboxes) {
 			if (Hit(box)) {
-				x -= vx*delta;//*box.Speed;
+				vx = max(min(vx, 400*box.Speed), -400*box.Speed);
+				x -= vx*delta*box.Speed;
+
 				if (jumpyness.x == 0/* && box.Speed == 1*/)
 					vx = 0;
 				else// if (box.Speed == 1)
@@ -35,11 +40,13 @@ public:
 			}
 		}
 
-		Y += vy*delta;
+		y += vy*delta;
 
 		foreach(ref box; hitboxes) {
 			if (Hit(box)) {
+				vy = max(min(vy, 400*box.Speed), -400*box.Speed);
 				y -= vy*delta*box.Speed;
+
 				if (jumpyness.y == 0 && box.Speed == 1)
 					vy = 0;
 				else if (box.Speed == 1)
@@ -53,8 +60,8 @@ public:
 		return MathHelper.CheckCollision(Rect(), b.Rect());
 	}
 
-	@property ref SDL_Rectd Rect() { return rt = SDL_Rectd(x, y, w, h); };
-	@property ref SDL_Pointd Point() { return pt = SDL_Pointd(x, y); };
+	@property ref SDL_Rectd Rect() { rt = SDL_Rectd(x, y, w, h); return rt; }
+	@property ref SDL_Pointd Point() { pt = SDL_Pointd(x, y); return pt; }
 
 	@property ref double X() { return x; }
 	@property ref double Y() { return y; }

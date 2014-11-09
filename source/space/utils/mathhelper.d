@@ -46,7 +46,6 @@ class MathHelper {
 	}
 }
 
-
 struct SDL_Rectd {
 	double x, y;
 	double w, h;
@@ -89,7 +88,7 @@ struct SDL_Rectd {
 	}
 
 	SDL_Rect Rect() {
-		return SDL_Rect(cast(int)x.lround, cast(int)y.lround, cast(int)w.lround, cast(int)h.lround);
+		return SDL_Rect(cast(int)x.round, cast(int)y.round, cast(int)w.round, cast(int)h.round);
 	}
 
 	SDL_Pointd Pointd() {
@@ -132,7 +131,7 @@ struct SDL_Pointd {
 	}
 
 	SDL_Point Point() {
-		return SDL_Point(cast(int)x.lround, cast(int)y.lround);
+		return SDL_Point(cast(int)x.round, cast(int)y.round);
 	}
 
 	SDL_Rectd Rect(double w = 0, double h = 0) {
