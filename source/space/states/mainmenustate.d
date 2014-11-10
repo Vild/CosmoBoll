@@ -11,6 +11,7 @@ import space.io.mouse;
 import space.log.log;
 import space.music.song;
 import space.states.gamestate;
+import space.states.tutorialstate;
 import space.utils.mathhelper;
 
 class MainMenuState : EngineState {
@@ -26,9 +27,11 @@ public:
 		buttonTex = new Texture(engine, null, "res/img/mainmenu_button.png");
 
 		SDL_Rectd pos = SDL_Rectd((engine.Size.w/2)-(buttonTex.Size.w/2), 0/*placeholder*/, buttonTex.Size.w, buttonTex.Size.h);
-		pos.y += pos.h + 300;
+		pos.y += pos.h + 250;
 		addButton(0, pos, "Spela", 8, &onClick);
-		pos.y += pos.h + 50;
+		pos.y += pos.h + 25;
+		addButton(1, pos, "Guide", 8, &onClick);
+		pos.y += pos.h + 25;
 		addButton(2, pos, "Avsluta", 8, &onClick);
 	}
 	
@@ -82,6 +85,8 @@ public:
 		Log.MainLogger.Info!onClick("ID: %d was clicked", button.id);
 		if (button.id == 0)
 			engine.ChangeState!GameState(engine);
+		else if (button.id == 1)
+			engine.ChangeState!TutorialState(engine);
 		else if (button.id == 2)
 			engine.Quit();
 	}

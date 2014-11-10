@@ -1,22 +1,22 @@
 ﻿module space.states.introstate;
 
+import derelict.sdl2.sdl;
 import space.engine;
 import space.enginestate;
-import space.graphics.texture;
 import space.graphics.text;
-import space.io.mouse;
+import space.graphics.texture;
 import space.io.keyboard;
-
-import space.states.mainmenustate;
-
-import derelict.sdl2.sdl;
+import space.io.mouse;
 import space.log.log;
+import space.states.mainmenustate;
+import space.utils.mathhelper;
 
 class IntroState : EngineState {
 public:
 	this(Engine* engine) {
 		super(engine);
 		tex = new Texture(engine, null, "res/img/intro.png");
+		text = new Text(engine, "WIP", 10);
 		fade = 1.0;
 	}
 	
@@ -28,7 +28,8 @@ public:
 		fade -= delta / 6;
 		if (fade < 0)
 			fade = 0;
-		//tex.SetAlpha(fade);
+		text.SetColor(0, 255, 255, cast(ubyte)(fade*255));
+		tex.SetAlpha(fade);
 		
 		Mouse m = engine.MouseState;
 		Keyboard k = engine.KeyboardState;
@@ -38,10 +39,13 @@ public:
 	}
 	override void Render() {
 		tex.Render(null, &engine.SizeRect(), false);
+		SDL_Rectd tmp = SDL_Rectd(engine.Size.x/2-text.Size.w/2, 20, 0, 0);
+		text.Render(&tmp);
 	}
 	
 private:
 	Texture tex;
 	double fade;
+	Text text;
 }
 

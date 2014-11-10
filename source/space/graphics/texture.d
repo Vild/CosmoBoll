@@ -79,7 +79,7 @@ private:
 	}
 }
 
-class BlockTexture : Texture { //TODO: Remove/Change?, i'm too lazy now
+class BlockTexture : Texture {
 public:
 	this(Engine* engine, RenderHelper* renderHelper, SDL_Color color) {
 		super(engine, renderHelper);

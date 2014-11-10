@@ -10,10 +10,11 @@ import space.physics.aabb;
 
 class ForceField {
 public:
-	this(Engine* engine, RenderHelper* renderHelper, string background, SDL_Color color, SDL_Rectd pos, double scale = 8) {
+	this(Engine* engine, RenderHelper* renderHelper, string background, SDL_Color coloroverlay, SDL_Color color, SDL_Rectd pos, double scale = 8) {
 		this.engine = engine;
 		this.bg = new Texture(engine, renderHelper, background);
 		this.bg.SetAlpha(180);
+		this.bg.SetColor(coloroverlay.r, coloroverlay.g, coloroverlay.b);
 		this.color = color;
 		this.pos = pos;
 		this.scale = scale;
@@ -35,8 +36,8 @@ public:
 
 		if (r2.Y <= pos.y) {
 			double diff = r2.Y-pos.y;
-			r1 = new AABB(pos.x, pos.y, pos.w, pos.h-diff, 0, 0, 0.9);
-			r2 = new AABB(pos.x, pos.y+pos.h-diff, pos.w, diff, 0, 0, 0.9);
+			r1 = new AABB(pos.x, pos.y, pos.w, pos.h-diff, 0, 0, 0.85);
+			r2 = new AABB(pos.x, pos.y+pos.h-diff, pos.w, diff, 0, 0, 0.85);
 			s1 = SDL_Rectd(0, diff, bg.Size.w, bg.Size.h);
 			s2 = SDL_Rectd(0, 0, bg.Size.w, diff);
 		}

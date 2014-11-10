@@ -32,7 +32,7 @@ public:
 			bgPos2.x += bgPos2.w * 2;
 
 		foreach(ref b; boxes) {
-			b.life -= delta/2;
+			b.life -= delta;
 			if (b.life <= 0) {
 				b.pos.x = cast(int)uniform(0, engine.Size.w);
 				b.pos.y = cast(int)uniform(0, engine.Size.h);
@@ -62,7 +62,7 @@ private:
 	SDL_Rectd bgPos2;
 	double scale;
 
-	box[400] boxes;
+	box[600] boxes;
 	struct box {
 		SDL_Pointd pos;
 		double life;
