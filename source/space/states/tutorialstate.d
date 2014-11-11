@@ -3,6 +3,7 @@
 import derelict.sdl2.sdl;
 import space.engine;
 import space.enginestate;
+import space.graphics.scrollingbackground;
 import space.graphics.text;
 import space.graphics.texture;
 import space.io.keyboard;
@@ -10,8 +11,6 @@ import space.io.mouse;
 import space.log.log;
 import space.states.mainmenustate;
 import space.utils.mathhelper;
-
-import space.graphics.scrollingbackground;
 
 class TutorialState : EngineState {
 public:
@@ -21,14 +20,15 @@ public:
 	}
 	
 	~this() {
-		destroy(tex);
+		destroy(text);
+		destroy(bg);
 	}
 	override void Update(double delta) {
 		bg.Update(delta);
 
 		Mouse m = engine.MouseState;
 		Keyboard k = engine.KeyboardState;
-		if (m.JustClicked || fade == 0 ||
+		if (m.JustClicked ||
 		    k.isDown(SDL_SCANCODE_SPACE) || k.isDown(SDL_SCANCODE_RETURN))
 			engine.ChangeState!MainMenuState(engine);
 	}
@@ -37,9 +37,7 @@ public:
 	}
 	
 private:
-	Texture tex;
-	double fade;
-	Text text;
 	ScrollingBackground bg;
+	Text text;
 }
 

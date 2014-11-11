@@ -20,6 +20,14 @@ public:
 
 		for(int i = 0; i < boxes.length; i++)
 			boxes[i] = box(SDL_Pointd(uniform(0, engine.Size.w), uniform(0, engine.Size.h)), uniform(0.0, 1.0));
+
+		this.globe = new Texture(engine, null, "res/img/globe.png");
+		this.globePos = SDL_Rectd(1366-globe.Size.w/10*5, 768-globe.Size.h/10*4, globe.Size.w/10*5, globe.Size.h/10*4);
+	}
+
+	~this() {
+		destroy(globe);
+		destroy(bg);
 	}
 
 	void Update(double delta) {
@@ -32,7 +40,7 @@ public:
 			bgPos2.x += bgPos2.w * 2;
 
 		foreach(ref b; boxes) {
-			b.life -= delta;
+			b.life -= delta/2;
 			if (b.life <= 0) {
 				b.pos.x = cast(int)uniform(0, engine.Size.w);
 				b.pos.y = cast(int)uniform(0, engine.Size.h);
@@ -51,7 +59,9 @@ public:
 			SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, cast(ubyte)(255*b.life));
 			SDL_RenderFillRect(engine.Renderer, &pos);
 		}
-
+		SDL_Rectd tmp = globe.Size;
+		tmp.w /= 2;	tmp.h /= 2;
+		globe.Render(&tmp, &globePos, false);
 	}
 
 	@property ref double Scale() { return scale; }
@@ -61,8 +71,10 @@ private:
 	SDL_Rectd bgPos1;
 	SDL_Rectd bgPos2;
 	double scale;
+	Texture globe;
+	SDL_Rectd globePos;
 
-	box[600] boxes;
+	box[400] boxes;
 	struct box {
 		SDL_Pointd pos;
 		double life;

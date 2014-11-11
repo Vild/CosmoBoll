@@ -31,6 +31,8 @@ public:
 	}
 
 	~this() {
+		destroy(mouse);
+		destroy(keyboard);
 		Mix_CloseAudio();
 		Mix_Quit();
 		IMG_Quit();
@@ -176,9 +178,6 @@ private:
 
 		SDL_SetWindowIcon(window, icon);
 		SDL_FreeSurface(icon);
-
-		//SDL_RenderSetScale(renderer, 0.5, 0.5);
-
 	}
 }
 

@@ -1,10 +1,10 @@
 ﻿module space.physics.aabb;
 
 import derelict.sdl2.sdl;
+import space.log.log;
 import space.utils.mathhelper;
 import std.algorithm;
 import std.math;
-import space.log.log;
 
 class AABB {
 public:

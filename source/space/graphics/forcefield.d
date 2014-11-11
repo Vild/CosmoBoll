@@ -4,9 +4,9 @@ import derelict.sdl2.sdl;
 import space.engine;
 import space.graphics.texture;
 import space.log.log;
+import space.physics.aabb;
 import space.utils.mathhelper;
 import space.utils.renderhelper;
-import space.physics.aabb;
 
 class ForceField {
 public:
@@ -23,6 +23,12 @@ public:
 		r2 = new AABB(pos.x, pos.y+pos.h, pos.w, 0, 0, 0.75);
 		s1 = SDL_Rectd(0, 0, bg.Size.w, bg.Size.h);
 		s2 = SDL_Rectd(0, 0, bg.Size.w, 0);
+	}
+
+	~this() {
+		destroy(r2);
+		destroy(r1);
+		destroy(bg);
 	}
 
 	void Update(double delta) {

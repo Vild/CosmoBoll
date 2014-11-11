@@ -4,10 +4,10 @@ import derelict.sdl2.image;
 import derelict.sdl2.sdl;
 import space.engine;
 import space.log.log;
+import space.physics.aabb;
 import space.utils.mathhelper;
 import space.utils.renderhelper;
 import std.string : toStringz;
-import space.physics.aabb;
 
 class Texture {
 public:
@@ -23,6 +23,9 @@ public:
 	}
 
 	void Update(double delta) {
+	}
+
+	void Reset() {
 	}
 
 	void Render(ref SDL_Rectd src, ref SDL_Rectd dst, bool correction = true, double angle = 0.0, SDL_RendererFlip flip = SDL_FLIP_NONE) {
@@ -86,6 +89,9 @@ public:
 		this.color = color;
 	}
 
+	~this() {
+	}
+
 	override void Render(SDL_Rectd* src, SDL_Rectd* dst, bool correction = true, double angle = 0.0, SDL_RendererFlip flip = SDL_FLIP_NONE) {
 		SDL_Pointd mid = renderHelper.PositionDiff;
 		double scale = renderHelper.Scale;
@@ -117,6 +123,10 @@ public:
 
 	override void Update(double delta) {
 		count += delta;
+	}
+
+	override void Reset() {
+		count = 0;
 	}
 
 	override void Render(SDL_Rectd* src, SDL_Rectd* dst, bool correction = true, double angle = 0.0, SDL_RendererFlip flip = SDL_FLIP_NONE) {

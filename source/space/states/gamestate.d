@@ -3,7 +3,9 @@
 import derelict.sdl2.sdl;
 import space.engine;
 import space.enginestate;
+import space.graphics.ball;
 import space.graphics.forcefield;
+import space.graphics.player;
 import space.graphics.scrollingbackground;
 import space.graphics.text;
 import space.graphics.texture;
@@ -14,8 +16,7 @@ import space.physics.aabb;
 import space.states.mainmenustate;
 import space.utils.mathhelper;
 import space.utils.renderhelper;
-import space.graphics.player;
-import space.graphics.ball;
+import std.math;
 
 class GameState : EngineState {
 public:
@@ -24,16 +25,26 @@ public:
 
 		renderHelper = new RenderHelper(engine);
 		bg = new ScrollingBackground(engine, "res/img/background.png");
+		surface = new Texture(engine, &renderHelper, "res/img/surface.png");
+		surfacePos = new SDL_Rectd(0, 768-surface.Size.h/10*7, 1366, surface.Size.h/10*7);
 		platform = new Texture(engine, &renderHelper, "res/img/platform.png");
 		platformsmall = new Texture(engine, &renderHelper, "res/img/platformsmall.png");
 		//platformPos = SDL_Rectd((engine.Size.w / 2) - (366/2), engine.Size.h-90, 366, 90);
 		platformPos1 = new AABB((engine.Size.w / 2) - (366/2), engine.Size.h-120, 366, 120);
-		platformPos2 = new AABB((engine.Size.w / 4) - (300/2), engine.Size.h/2-50, 300, 40);
-		platformPos3 = new AABB((engine.Size.w / 4)*3 - (300/2), engine.Size.h/2-50, 300, 40);
+		platformPos2 = new AABB((engine.Size.w / 4) - (300/2), engine.Size.h/2-50, 300, 50);
+		platformPos3 = new AABB((engine.Size.w / 4)*3 - (300/2), engine.Size.h/2-50, 300, 50);
+		platformPole = new Texture(engine, &renderHelper, "res/img/pole.png");
+		platformPole1 = SDL_Rectd((engine.Size.w / 4) - (300/2)+22+8, engine.Size.h/2-8, 26, engine.Size.h/2+8);
+		platformPole2 = SDL_Rectd((engine.Size.w / 4) - (300/2)+300/2-23+8, engine.Size.h/2-8, 26, engine.Size.h/2+8);
+		platformPole3 = SDL_Rectd((engine.Size.w / 4) - (300/2)+300-66+8, engine.Size.h/2-8, 26, engine.Size.h/2+8);
+		platformPole4 = SDL_Rectd((engine.Size.w / 4)*3 - (300/2)+22+8, engine.Size.h/2-8, 26, engine.Size.h/2+8);
+		platformPole5 = SDL_Rectd((engine.Size.w / 4)*3 - (300/2)+300/2-23+8, engine.Size.h/2-8, 26, engine.Size.h/2+8);
+		platformPole6 = SDL_Rectd((engine.Size.w / 4)*3 - (300/2)+300-66+8, engine.Size.h/2-8, 26, engine.Size.h/2+8);
 
-		platformSide1 = new AABB(0, -132, 5, 900);
-		platformSide2 = new AABB(1366-5, -132, 5, 900);
-		platformTop = new AABB(0, -132, 1366, 5);
+		sides = new BlockTexture(engine, &renderHelper, SDL_Color(0, 0, 0, 0));
+		platformSide1 = new AABB(0, -132, 1, 900);
+		platformSide2 = new AABB(1366-1, -132, 1, 900);
+		platformTop = new AABB(0, -132, 1366, 1);
 		forceField1 = new ForceField(engine, &renderHelper, "res/img/forcefieldwave.png", SDL_Color(255, 200, 200), SDL_Color(161, 84, 60, 180), SDL_Rectd(0, 768-75, 1366/2, 75));
 		forceField2 = new ForceField(engine, &renderHelper, "res/img/forcefieldwave.png", SDL_Color(200, 200, 255), SDL_Color(60, 84, 161, 180), SDL_Rectd(1366/2, 768-75, 1366/2, 75));
 
@@ -43,19 +54,53 @@ public:
 
 		ball = new Ball(engine, new Texture(engine, &renderHelper, "res/img/ball.png"),new AABB(1366/2-40/2, -100, 40, 40), [
 			SDL_Pointd((engine.Size.w / 4), engine.Size.h/2-100),
-			SDL_Pointd((engine.Size.w / 4)*3, engine.Size.h/2-100)
+			SDL_Pointd((engine.Size.w / 4)*3, engine.Size.h/2-100),
+			SDL_Pointd((engine.Size.w / 2), engine.Size.h-200)
 		]);
 		fpstext = new Text(engine, "FPS: UNKNOWN", 2);
 
 
 		point1 = 0;
 		point2 = 0;
-		pointText = new Text(engine, "0 - 0", 2);
+		pointText1 = new Text(engine, format("%d", point1), 8);
+		pointText2 = new Text(engine, format("%d", point2), 8);
+
+		pointText1.SetColor(255, 100, 100);
+		pointText2.SetColor(100, 100, 255);
+
+		time = 60*2;
+		timeText = new Text(engine, format("%d", cast(int)time.round), 8);
 	}
 	
 	~this() {
+		destroy(timeText);
+		destroy(pointText2);
+		destroy(pointText1);
+		destroy(fpstext);
+		destroy(ball);
+		destroy(player2);
+		destroy(player1);
+		destroy(forceField2);
+		destroy(forceField1);
+		destroy(platformTop);
+		destroy(platformSide2);
+		destroy(platformSide1);
+		destroy(sides);
+		destroy(platformPole6);
+		destroy(platformPole5);
+		destroy(platformPole4);
+		destroy(platformPole3);
+		destroy(platformPole2);
+		destroy(platformPole1);
+		destroy(platformPole);
+		destroy(platformPos3);
+		destroy(platformPos2);
+		destroy(platformPos1);
+		destroy(platformsmall);
 		destroy(platform);
+		destroy(surface);
 		destroy(bg);
+		destroy(renderHelper);
 	}
 
 	override void Update(double delta) {
@@ -79,7 +124,7 @@ public:
 		if (player1.Pos.Y > engine.Size.y) player1.Respawn();
 		if (player2.Pos.Y > engine.Size.y) player2.Respawn();
 		if (ball.Pos.Y > engine.Size.y) {
-			if (ball.Pos.X < engine.Size.x/2)
+			if (ball.Pos.X > engine.Size.x/2)
 				point1++;
 			else
 				point2++;
@@ -89,12 +134,28 @@ public:
 		bg.Update(delta);
 		forceField1.Update(delta);
 		forceField2.Update(delta);
+
+		time -= delta;
+
 		//renderHelper.Update(playerPos1, playerPos2); //Todo: change
 		fpstext.Text = format("%d fps, %f ms/frame", engine.FPS, engine.FPS_MS);
-		pointText.Text = format("%-3d - %3d", point1, point2);
+		pointText1.Text = format("%d", point1);
+		pointText2.Text = format("%d", point2);
+		timeText.Text = format("%d", cast(int)time.round);
+
+		pointTextPos1 = SDL_Rectd(20, 20, 0, 0);
+		pointTextPos2 = SDL_Rectd(engine.Size.w-20-pointText2.Size.w, 20, 0, 0);
+		timeTextPos = SDL_Rectd(engine.Size.w/2-timeText.Size.w/2, 20, 0, 0);
 	}
 	override void Render() {
 		bg.Render();
+		surface.Render(null, &surfacePos, false);
+		platformPole.Render(null, &platformPole1, false);
+		platformPole.Render(null, &platformPole2, false);
+		platformPole.Render(null, &platformPole3, false);
+		platformPole.Render(null, &platformPole4, false);
+		platformPole.Render(null, &platformPole5, false);
+		platformPole.Render(null, &platformPole6, false);
 
 		player1.Render();
 		player2.Render();
@@ -106,24 +167,60 @@ public:
 		platform.Render(null, &platformPos1.Rect(), false);
 		platformsmall.Render(null, &platformPos2.Rect(), false);
 		platformsmall.Render(null, &platformPos3.Rect(), false);
-		platform.Render(null, &platformSide1.Rect(), false);
-		platform.Render(null, &platformSide2.Rect(), false);
-		platform.Render(null, &platformTop.Rect(), false);
-
-		SDL_Rectd tmppos = SDL_Rectd(10, 10, 0, 0);
+		sides.Render(null, &platformSide1.Rect(), false);
+		sides.Render(null, &platformSide2.Rect(), false);
+		sides.Render(null, &platformTop.Rect(), false);
+	
+		SDL_Rectd tmppos = SDL_Rectd(10, 50, 0, 0);
 		fpstext.Render(&tmppos);
-		tmppos.x = (engine.Size.x/2) - (pointText.Size.w/2);
-		pointText.Render(&tmppos);
+
+		pointText1.SetColor(200, 100, 100, 100);
+		pointTextPos1.x += 8;
+		pointTextPos1.y -= 8;
+		pointText1.Render(&pointTextPos1);
+		pointText1.SetColor(255, 100, 100, 255);
+		pointTextPos1.x -= 8;
+		pointTextPos1.y += 8;
+		pointText1.Render(&pointTextPos1);
+
+		pointText2.SetColor(100, 100, 200, 100);
+		pointTextPos1.x += 8;
+		pointTextPos1.y -= 8;
+		pointText2.Render(&pointTextPos2);
+		pointText2.SetColor(100, 100, 255, 255);
+		pointTextPos2.x -= 8;
+		pointTextPos2.y += 8;
+		pointText2.Render(&pointTextPos2);
+
+		timeText.SetColor(200, 200, 200, 100);
+		timeTextPos.x += 8;
+		timeTextPos.y -= 8;
+		timeText.Render(&timeTextPos);
+		timeText.SetColor(255, 255, 255, 255);
+		timeTextPos.x -= 8;
+		timeTextPos.y += 8;
+		timeText.Render(&timeTextPos);
+
 	}
 
 private:
 	RenderHelper renderHelper;
 	ScrollingBackground bg;
+	Texture surface;
+	SDL_Rectd surfacePos;
 	Texture platform;
 	Texture platformsmall;
 	AABB platformPos1;
 	AABB platformPos2;
 	AABB platformPos3;
+	Texture platformPole;
+	SDL_Rectd platformPole1;
+	SDL_Rectd platformPole2;
+	SDL_Rectd platformPole3;
+	SDL_Rectd platformPole4;
+	SDL_Rectd platformPole5;
+	SDL_Rectd platformPole6;
+	Texture sides;
 	AABB platformSide1;
 	AABB platformSide2;
 	AABB platformTop;
@@ -135,5 +232,11 @@ private:
 	Text fpstext;
 	int point1;
 	int point2;
-	Text pointText;
+	Text pointText1;
+	Text pointText2;
+	SDL_Rectd pointTextPos1;
+	SDL_Rectd pointTextPos2;
+	double time;
+	Text timeText;
+	SDL_Rectd timeTextPos;
 }

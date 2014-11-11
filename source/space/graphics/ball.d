@@ -18,6 +18,12 @@ public:
 		this.pos.ApplySpeed = true;
 	}
 
+	~this() {
+		destroy(poses);
+		destroy(pos);
+		destroy(tex);
+	}
+
 	void Update(double delta, double speed, double gravity, AABB[] colideWith) {
 		if (isHooked)
 			return;
