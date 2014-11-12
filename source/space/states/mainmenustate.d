@@ -18,15 +18,17 @@ class MainMenuState : EngineState {
 public:
 	this(Engine* engine) {
 		super(engine);
-		song = new Song("res/song/mainmenu.mp3");
-		bg = new ScrollingBackground(engine, "res/img/background.png");
+		if ((allTheTime !is null && allTheTime.Current != "res/song/mainmenu.mp3") || allTheTime is null) {
+			allTheTime = new Song("res/song/mainmenu.mp3", true);
+			allTheTime.Play(-1);
+		}
+		bg = new ScrollingBackground(engine);
 		//title = new Text(engine, "\x01 Cosmo Boll \x02", 10);
 		//titlePos = SDL_Rectd((engine.Size.w/2)-(title.Size.w/2), 100, title.Size.w, title.Size.h);
 		title = new Texture(engine, null, "res/img/title.png");
 		titlePos = SDL_Rectd((engine.Size.w/2)-(1815/6), 10, 1815/3, 1004/3);
-		buttonTex = new Texture(engine, null, "res/img/mainmenu_button.png");
 
-		SDL_Rectd pos = SDL_Rectd((engine.Size.w/2)-(buttonTex.Size.w/2), 0/*placeholder*/, buttonTex.Size.w, buttonTex.Size.h);
+		SDL_Rectd pos = SDL_Rectd((engine.Size.w/2)-(450/2), 0/*placeholder*/, 450, 120);
 		pos.y += pos.h + 250;
 		addButton(0, pos, "Spela", 8, &onClick);
 		pos.y += pos.h + 25;
@@ -37,10 +39,8 @@ public:
 	
 	~this() {
 		destroy(buttons);
-		destroy(buttonTex);
 		destroy(title);
 		destroy(bg);
-		destroy(song);
 	}
 
 	override void Update(double delta) {
@@ -56,10 +56,6 @@ public:
 				if (MathHelper.CheckCollision(b.hitbox, SDL_Rectd(m.X, m.Y, 1, 1)))
 					b.onClick(b);
 		}
-
-		if (k.isDown(SDL_SCANCODE_SPACE))
-		    engine.ChangeState!GameState(engine);
-
 	}
 	override void Render() {
 		bg.Render();
@@ -69,13 +65,6 @@ public:
 		//SDL_RenderFillRect(engine.Renderer, &titlePos);
 		foreach (Button b; buttons) {
 			//buttonTex.Render(null, &b.hitbox);
-			b.text.SetColor(230, 200, 5, 50);
-			b.textPos.x += 8;
-			b.textPos.y -= 8;
-			b.text.Render(&b.textPos);
-			b.text.SetColor(255, 190, 10, 255);
-			b.textPos.x -= 8;
-			b.textPos.y += 8;
 			b.text.Render(&b.textPos);
 
 		}
@@ -92,13 +81,11 @@ public:
 	}
 
 private:
-	Song song;
 	ScrollingBackground bg;
 	//Text title;
 	Texture title;
 	SDL_Rectd titlePos;
 
-	Texture buttonTex;
 	Button[] buttons;
 
 	alias onClick_f = void delegate(ref Button button);
@@ -118,7 +105,7 @@ private:
 		textPos.y = pos.y + (pos.h/2) - (text.Size.h/2);
 		textPos.w = 0;
 		textPos.h = 0;
-		text.SetColor(255, 190, 10);
+		text.SetColor(SDL_Color(255, 190, 10, 255), SDL_Color(230, 200, 5, 50));
 
 		buttons ~= Button(id, pos, text, textPos, onClick);
 	}

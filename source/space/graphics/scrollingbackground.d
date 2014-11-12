@@ -10,9 +10,9 @@ import std.random;
 
 class ScrollingBackground {
 public:
-	this(Engine* engine, string background, double scale = 10) {
+	this(Engine* engine, double scale = 10) {
 		this.engine = engine;
-		this.bg = new Texture(engine, null, background);
+		this.bg = new Texture(engine, null, "res/img/background.png");
 		this.bgPos1 = bg.Size;
 		this.bgPos2 = bg.Size;
 		this.bgPos2.x = bgPos2.w;
@@ -22,6 +22,7 @@ public:
 			boxes[i] = box(SDL_Pointd(uniform(0, engine.Size.w), uniform(0, engine.Size.h)), uniform(0.0, 1.0));
 
 		this.globe = new Texture(engine, null, "res/img/globe.png");
+		this.globe.SetColor(100, 100, 100);
 		this.globePos = SDL_Rectd(1366-globe.Size.w/10*5, 768-globe.Size.h/10*4, globe.Size.w/10*5, globe.Size.h/10*4);
 	}
 

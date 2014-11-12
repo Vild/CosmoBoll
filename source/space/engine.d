@@ -67,10 +67,7 @@ public:
 			while(SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT)
 					done = true;
-				else if (event.type == SDL_KEYDOWN) {
-					if (event.key.keysym.sym == SDLK_ESCAPE)
-						done = true;
-				} else if (event.type == SDL_WINDOWEVENT) {
+				else if (event.type == SDL_WINDOWEVENT) {
 					if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
 						fpslock = true;
 						log.Info!Renderer("Locked");
@@ -173,6 +170,7 @@ private:
 
 		if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) != 0)
 			log.Critical!initSDL("Mix_OpenAudio(): %s", to!string(Mix_GetError));
+		Mix_AllocateChannels(16);
 
 		SDL_Surface* icon = IMG_Load(toStringz("res/img/icon.png"));
 

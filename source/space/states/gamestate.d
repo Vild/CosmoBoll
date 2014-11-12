@@ -17,14 +17,20 @@ import space.states.mainmenustate;
 import space.utils.mathhelper;
 import space.utils.renderhelper;
 import std.math;
+import space.music.song;
+import space.states.winstate;
 
 class GameState : EngineState {
 public:
 	this(Engine* engine) {
 		super(engine);
+		if ((allTheTime !is null && allTheTime.Current != "res/song/game.mp3") || allTheTime is null) {
+			allTheTime = new Song("res/song/game.mp3", true);
+			allTheTime.Play(-1);
+		}
 
 		renderHelper = new RenderHelper(engine);
-		bg = new ScrollingBackground(engine, "res/img/background.png");
+		bg = new ScrollingBackground(engine);
 		surface = new Texture(engine, &renderHelper, "res/img/surface.png");
 		surfacePos = new SDL_Rectd(0, 768-surface.Size.h/10*7, 1366, surface.Size.h/10*7);
 		platform = new Texture(engine, &renderHelper, "res/img/platform.png");
@@ -45,11 +51,11 @@ public:
 		platformSide1 = new AABB(0, -132, 1, 900);
 		platformSide2 = new AABB(1366-1, -132, 1, 900);
 		platformTop = new AABB(0, -132, 1366, 1);
-		forceField1 = new ForceField(engine, &renderHelper, "res/img/forcefieldwave.png", SDL_Color(255, 200, 200), SDL_Color(161, 84, 60, 180), SDL_Rectd(0, 768-75, 1366/2, 75));
-		forceField2 = new ForceField(engine, &renderHelper, "res/img/forcefieldwave.png", SDL_Color(200, 200, 255), SDL_Color(60, 84, 161, 180), SDL_Rectd(1366/2, 768-75, 1366/2, 75));
+		forceField1 = new ForceField(engine, &renderHelper, "res/img/forcefieldwave.png", SDL_Color(255, 200, 200, 255), SDL_Color(161, 84, 60, 180), SDL_Rectd(0, 768-75, 1366/2, 75));
+		forceField2 = new ForceField(engine, &renderHelper, "res/img/forcefieldwave.png", SDL_Color(200, 200, 255, 255), SDL_Color(60, 84, 161, 180), SDL_Rectd(1366/2, 768-75, 1366/2, 75));
 
-		player1 = new Player(engine, SDL_Color(255, 200, 200), new AABB(1366/2-44/2-44, -73, 44, 73), SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_SPACE);
-		player2 = new Player(engine, SDL_Color(200, 200, 255), new AABB(1366/2-44/2+44, -73, 44, 73), SDL_SCANCODE_UP, SDL_SCANCODE_DOWN, SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT, SDL_SCANCODE_RSHIFT);
+		player1 = new Player(engine, SDL_Color(255, 180, 180), new AABB(1366/2-44/2-44, -73, 44, 73), SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_SPACE);
+		player2 = new Player(engine, SDL_Color(180, 180, 255), new AABB(1366/2-44/2+44, -73, 44, 73), SDL_SCANCODE_UP, SDL_SCANCODE_DOWN, SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT, SDL_SCANCODE_RSHIFT);
 		player2.LookLeft = true;
 
 		ball = new Ball(engine, new Texture(engine, &renderHelper, "res/img/ball.png"),new AABB(1366/2-40/2, -100, 40, 40), [
@@ -57,7 +63,6 @@ public:
 			SDL_Pointd((engine.Size.w / 4)*3, engine.Size.h/2-100),
 			SDL_Pointd((engine.Size.w / 2), engine.Size.h-200)
 		]);
-		fpstext = new Text(engine, "FPS: UNKNOWN", 2);
 
 
 		point1 = 0;
@@ -65,18 +70,18 @@ public:
 		pointText1 = new Text(engine, format("%d", point1), 8);
 		pointText2 = new Text(engine, format("%d", point2), 8);
 
-		pointText1.SetColor(255, 100, 100);
-		pointText2.SetColor(100, 100, 255);
+		pointText1.SetColor(SDL_Color(255, 100, 100, 255), SDL_Color(200, 100, 100, 100));
+		pointText2.SetColor(SDL_Color(100, 100, 255, 255), SDL_Color(100, 100, 200, 100));
 
-		time = 60*2;
+		time = 60*5;
 		timeText = new Text(engine, format("%d", cast(int)time.round), 8);
+		timeText.SetColor(SDL_Color(255, 255, 255, 255), SDL_Color(200, 200, 200, 100));
 	}
 	
 	~this() {
 		destroy(timeText);
 		destroy(pointText2);
 		destroy(pointText1);
-		destroy(fpstext);
 		destroy(ball);
 		destroy(player2);
 		destroy(player1);
@@ -109,7 +114,7 @@ public:
 		Keyboard k = engine.KeyboardState;
 
 
-		if (k.isDown(SDL_SCANCODE_RETURN))
+		if (k.isDown(SDL_SCANCODE_ESCAPE))
 		    engine.ChangeState!MainMenuState(engine);
 
 		AABB[] hitthingy = [platformPos1, platformPos2, platformPos3,
@@ -137,8 +142,10 @@ public:
 
 		time -= delta;
 
+		if (time <= 0)
+			engine.ChangeState!WinState(engine, point1, point2);
+
 		//renderHelper.Update(playerPos1, playerPos2); //Todo: change
-		fpstext.Text = format("%d fps, %f ms/frame", engine.FPS, engine.FPS_MS);
 		pointText1.Text = format("%d", point1);
 		pointText2.Text = format("%d", point2);
 		timeText.Text = format("%d", cast(int)time.round);
@@ -171,34 +178,9 @@ public:
 		sides.Render(null, &platformSide2.Rect(), false);
 		sides.Render(null, &platformTop.Rect(), false);
 	
-		SDL_Rectd tmppos = SDL_Rectd(10, 50, 0, 0);
-		fpstext.Render(&tmppos);
-
-		pointText1.SetColor(200, 100, 100, 100);
-		pointTextPos1.x += 8;
-		pointTextPos1.y -= 8;
 		pointText1.Render(&pointTextPos1);
-		pointText1.SetColor(255, 100, 100, 255);
-		pointTextPos1.x -= 8;
-		pointTextPos1.y += 8;
-		pointText1.Render(&pointTextPos1);
-
-		pointText2.SetColor(100, 100, 200, 100);
-		pointTextPos1.x += 8;
-		pointTextPos1.y -= 8;
-		pointText2.Render(&pointTextPos2);
-		pointText2.SetColor(100, 100, 255, 255);
-		pointTextPos2.x -= 8;
-		pointTextPos2.y += 8;
 		pointText2.Render(&pointTextPos2);
 
-		timeText.SetColor(200, 200, 200, 100);
-		timeTextPos.x += 8;
-		timeTextPos.y -= 8;
-		timeText.Render(&timeTextPos);
-		timeText.SetColor(255, 255, 255, 255);
-		timeTextPos.x -= 8;
-		timeTextPos.y += 8;
 		timeText.Render(&timeTextPos);
 
 	}
@@ -229,7 +211,6 @@ private:
 	Player player1;
 	Player player2;
 	Ball ball;
-	Text fpstext;
 	int point1;
 	int point2;
 	Text pointText1;

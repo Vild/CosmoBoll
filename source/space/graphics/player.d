@@ -9,6 +9,7 @@ import space.log.log;
 import space.physics.aabb;
 import space.utils.mathhelper;
 import std.math;
+import space.music.song;
 
 class Player {
 public:
@@ -19,17 +20,16 @@ public:
 			"res/img/man/run1.png", "res/img/man/run2.png", "res/img/man/run3.png", "res/img/man/run4.png", "res/img/man/run5.png", 
 			"res/img/man/run6.png", "res/img/man/run7.png", "res/img/man/run8.png", "res/img/man/run9.png", "res/img/man/run10.png", 
 			"res/img/man/run11.png", "res/img/man/run12.png", "res/img/man/run13.png"], 0.08);
-		this.start = new AnimatedTexture(engine, null, [
-			"res/img/man/start1.png", "res/img/man/start2.png", "res/img/man/start3.png"], 0.08);
 		this.fly = new AnimatedTexture(engine, null, [
 			"res/img/man/fly1.png", "res/img/man/fly2.png", "res/img/man/fly3.png"], 0.08);
 		this.color = color;
 		this.idle.SetColor(color.r, color.g, color.b);
 		this.run.SetColor(color.r, color.g, color.b);
-		this.start.SetColor(color.r, color.g, color.b);
 		this.fly.SetColor(color.r, color.g, color.b);
 		this.pos = pos;
 		this.orgpos = pos.Point;
+		this.jetpack = new Song("res/song/jetpack.wav");
+		this.jetpack.SetVolume(15);
 
 		this.lookLeft = false;
 
@@ -41,9 +41,9 @@ public:
 	}
 
 	~this() {
+		destroy(jetpack);
 		destroy(pos);
 		destroy(fly);
-		destroy(start);
 		destroy(run);
 		destroy(idle);
 	}
@@ -59,7 +59,7 @@ public:
 
 		if (k.isDown(up)) {
 			if (pos.VY.abs < MOVEMENT_THRESHOLD)
-				didJump = 0.24;
+				didJump = 0;//.5*3;
 			dvy -= delta*speed;
 		}
 		if (k.isDown(down))
@@ -107,23 +107,18 @@ public:
 		}
 		pos.Update(delta, dvx, dvy, colideWith);
 
-		if (pos.VX.abs < MOVEMENT_THRESHOLD && pos.VY.abs < MOVEMENT_THRESHOLD)
+		if (pos.VX.abs < MOVEMENT_THRESHOLD && pos.VY.abs < MOVEMENT_THRESHOLD) {
 			idle.Update(delta);
-		else {
+			jetpack.Stop();
+		} else {
 			idle.Reset();
-			if (pos.VY.abs < MOVEMENT_THRESHOLD)
+			if (pos.VY.abs < MOVEMENT_THRESHOLD) {
 				run.Update(delta);
-			else {
+				jetpack.Stop();
+			} else {
 				run.Reset();
-				if (didJump > 0)
-					didJump -= delta;
-
-				if (didJump > 0)
-					start.Update(delta);
-				else {
-					start.Reset();
-					fly.Update(delta); //FIXME: Reset me sometime maybe?
-				}
+				fly.Update(delta); //FIXME: Reset me sometime maybe?
+				jetpack.Play(-1);
 			}
 		}
 	}
@@ -133,8 +128,6 @@ public:
 			idle.Render(null, &pos.Rect(), false, 0, lookLeft ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 		else if (pos.VY.abs < MOVEMENT_THRESHOLD)
 			run.Render(null, &pos.Rect(), false, 0, lookLeft ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
-		else if (didJump > 0)
-			start.Render(null, &pos.Rect(), false, 0, lookLeft ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 		else
 			fly.Render(null, &pos.Rect(), false, 0, lookLeft ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 		if (hookedBall !is null) {
@@ -165,11 +158,11 @@ private:
 	Engine* engine;
 	Texture idle;
 	Texture run;
-	Texture start;
 	Texture fly;
 	SDL_Color color;
 	AABB pos;
 	SDL_Pointd orgpos;
+	Song jetpack;
 
 	bool lookLeft;
 	Ball* hookedBall;

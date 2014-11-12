@@ -28,13 +28,13 @@ public:
 		fade -= delta / 6;
 		if (fade < 0)
 			fade = 0;
-		text.SetColor(0, 255, 255, cast(ubyte)(fade*255));
+		text.SetColor(SDL_Color(0, 255, 255, cast(ubyte)(fade*255)), SDL_Color(0, 200, 200, cast(ubyte)(fade*100)));
 		tex.SetAlpha(fade);
 		
 		Mouse m = engine.MouseState;
 		Keyboard k = engine.KeyboardState;
 		if (m.JustClicked || fade == 0 ||
-		    k.isDown(SDL_SCANCODE_SPACE) || k.isDown(SDL_SCANCODE_RETURN))
+		    k.isDown(SDL_SCANCODE_SPACE) || k.isDown(SDL_SCANCODE_RETURN) || k.isDown(SDL_SCANCODE_ESCAPE))
 			engine.ChangeState!MainMenuState(engine);
 	}
 	override void Render() {

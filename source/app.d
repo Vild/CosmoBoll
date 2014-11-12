@@ -1,7 +1,7 @@
 module app;
 import space.engine;
 import space.log.log;
-import space.states.introstate;
+import space.states.mainmenustate;
 import std.math;
 import std.stdio;
 
@@ -13,7 +13,7 @@ int main(string[] args){
 	log.LogFile = File("space.log", "a");
 
 	Engine engine = new Engine("Cosmo Boll", 1366, 768, false);
-	engine.ChangeState!IntroState(&engine);
+	engine.ChangeState!MainMenuState(&engine);
 	engine.MainLoop();
 
 	log.LogFile.close();
