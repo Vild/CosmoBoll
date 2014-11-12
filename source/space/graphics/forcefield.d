@@ -42,8 +42,8 @@ public:
 
 		if (r2.Y <= pos.y) {
 			double diff = r2.Y-pos.y;
-			r1 = new AABB(pos.x, pos.y, pos.w, pos.h-diff, 0, 0, 0.85);
-			r2 = new AABB(pos.x, pos.y+pos.h-diff, pos.w, diff, 0, 0, 0.85);
+			r1 = new AABB(pos.x, pos.y, pos.w, pos.h-diff, 0, 0, 0.75);
+			r2 = new AABB(pos.x, pos.y+pos.h-diff, pos.w, diff, 0, 0, 0.75);
 			s1 = SDL_Rectd(0, diff, bg.Size.w, bg.Size.h);
 			s2 = SDL_Rectd(0, 0, bg.Size.w, diff);
 		}
@@ -76,4 +76,3 @@ private:
 	SDL_Rectd s2;
 	double scale;
 }
-
