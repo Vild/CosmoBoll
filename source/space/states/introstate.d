@@ -16,7 +16,6 @@ public:
 	this(Engine* engine) {
 		super(engine);
 		tex = new Texture(engine, null, "res/img/intro.png");
-		text = new Text(engine, "WIP", 10);
 		fade = 1.0;
 	}
 	
@@ -28,7 +27,6 @@ public:
 		fade -= delta / 6;
 		if (fade < 0)
 			fade = 0;
-		text.SetColor(SDL_Color(0, 255, 255, cast(ubyte)(fade*255)), SDL_Color(0, 200, 200, cast(ubyte)(fade*100)));
 		tex.SetAlpha(fade);
 		
 		Mouse m = engine.MouseState;
@@ -39,13 +37,10 @@ public:
 	}
 	override void Render() {
 		tex.Render(null, &engine.SizeRect(), false);
-		SDL_Rectd tmp = SDL_Rectd(engine.Size.x/2-text.Size.w/2, 20, 0, 0);
-		text.Render(&tmp);
 	}
 	
 private:
 	Texture tex;
 	double fade;
-	Text text;
 }
 

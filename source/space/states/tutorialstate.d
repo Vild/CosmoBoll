@@ -18,7 +18,7 @@ public:
 		super(engine);
 		bg = new ScrollingBackground(engine);
 		tutorial = new Texture(engine, null, "res/img/tutorial.png");
-		pushButton = new Text(engine, "Tryck ESC eller vänsterklick för att gå tillbaka", 2);
+		pushButton = new Text(engine, "Tryck ESC eller vänsterklicka för att gå tillbaka", 2);
 	}
 	
 	~this() {
