@@ -132,9 +132,15 @@ public:
 			fly.Render(null, &pos.Rect(), false, 0, lookLeft ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 		if (hookedBall !is null) {
 			SDL_SetRenderDrawColor(engine.Renderer, color.r, color.g, color.b, 200);
-			SDL_RenderDrawLine(engine.Renderer, cast(int)(pos.X+pos.W/2+5-1), cast(int)(pos.Y+4), cast(int)(hookedBall.Pos.X+hookedBall.Pos.W/2-1), cast(int)(hookedBall.Pos.Y+hookedBall.Pos.H/2));
-			SDL_RenderDrawLine(engine.Renderer, cast(int)(pos.X+pos.W/2+5), cast(int)(pos.Y+4), cast(int)(hookedBall.Pos.X+hookedBall.Pos.W/2), cast(int)(hookedBall.Pos.Y+hookedBall.Pos.H/2));
-			SDL_RenderDrawLine(engine.Renderer, cast(int)(pos.X+pos.W/2+5+1), cast(int)(pos.Y+4), cast(int)(hookedBall.Pos.X+hookedBall.Pos.W/2+1), cast(int)(hookedBall.Pos.Y+hookedBall.Pos.H/2));
+			double lx = pos.X+pos.W/2;
+			if (lookLeft)
+				lx -= 5;
+			else
+				lx += 5;
+
+			SDL_RenderDrawLine(engine.Renderer, cast(int)(lx-1), cast(int)(pos.Y+4), cast(int)(hookedBall.Pos.X+hookedBall.Pos.W/2-1), cast(int)(hookedBall.Pos.Y+hookedBall.Pos.H/2));
+			SDL_RenderDrawLine(engine.Renderer, cast(int)(lx), cast(int)(pos.Y+4), cast(int)(hookedBall.Pos.X+hookedBall.Pos.W/2), cast(int)(hookedBall.Pos.Y+hookedBall.Pos.H/2));
+			SDL_RenderDrawLine(engine.Renderer, cast(int)(lx+1), cast(int)(pos.Y+4), cast(int)(hookedBall.Pos.X+hookedBall.Pos.W/2+1), cast(int)(hookedBall.Pos.Y+hookedBall.Pos.H/2));
 		}
 
 	}
