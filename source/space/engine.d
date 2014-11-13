@@ -14,6 +14,7 @@ import space.utils.mathhelper;
 import std.conv : to;
 import std.datetime;
 import std.string : toStringz;
+import std.math;
 
 class Engine {
 public:
@@ -67,7 +68,16 @@ public:
 			while(SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT)
 					done = true;
-				else if (event.type == SDL_WINDOWEVENT) {
+				else if (event.type == SDL_KEYDOWN) {
+					if (event.key.keysym.scancode == SDL_SCANCODE_F11) {
+						uint flags = (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP); 
+						SDL_SetWindowFullscreen(window, flags);
+						if ((flags & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
+							SDL_RenderSetLogicalSize(renderer, cast(int)size.x.round, cast(int)size.y.round);
+						else
+							SDL_SetWindowSize(window, cast(int)size.x.round, cast(int)size.y.round);
+					}
+				} else if (event.type == SDL_WINDOWEVENT) {
 					if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
 						fpslock = true;
 						log.Info!Renderer("Locked");

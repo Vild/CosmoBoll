@@ -1,0 +1,3 @@
+För en guide, tryck på knappen "Guide" i huvudmenyn.
+Escape kommer att gå tillbaka till huvudmenyn oavsätt vart man är.
+F11 Kommer att växla mellan fullskärmsläge och fönsterläge.
