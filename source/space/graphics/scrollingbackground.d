@@ -23,7 +23,7 @@ public:
 
 		this.globe = new Texture(engine, null, "res/img/globe.png");
 		this.globe.SetColor(100, 100, 100);
-		this.globePos = SDL_Rectd(1366-globe.Size.w/10*5, 768-globe.Size.h/10*4, globe.Size.w/10*5, globe.Size.h/10*4);
+		this.globePos = SDL_Rectd(1366-globe.Size.w/10*8, 768-globe.Size.h/10*7, globe.Size.w/10*8, globe.Size.h/10*7);
 	}
 
 	~this() {
