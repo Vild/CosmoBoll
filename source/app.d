@@ -13,6 +13,7 @@ int main(string[] args){
 	log.LogFile = File("space.log", "a");
 
 	Engine engine = new Engine("Cosmo Boll", 1366, 768, false);
+	engine.MouseState.SetEngine(&engine);
 	engine.ChangeState!IntroState(&engine);
 	engine.MainLoop();
 

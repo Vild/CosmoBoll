@@ -49,7 +49,6 @@ public:
 		frame = 0;
 		tick = 0;
 
-
 		while (!done) {
 			if (state != newstate) {
 				destroy(state);
@@ -113,6 +112,7 @@ public:
 
 	}
 
+	@property SDL_Window* Window() { return window; }
 	@property SDL_Renderer* Renderer() { return renderer; }
 	@property EngineState State() { return state; }
 	void ChangeState(T, Args...)(Args args) {
