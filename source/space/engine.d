@@ -107,7 +107,7 @@ public:
 				lastTime += 1000;
 			}
 			if (fpslock)
-				SDL_Delay(1000/30); //Lock to 10 fps
+				SDL_Delay(1000/30); //Lock to 30 fps
 		}
 
 	}
