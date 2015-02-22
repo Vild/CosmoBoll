@@ -1,5 +1,6 @@
 ﻿module space.states.winstate;
 
+import dtext;
 import derelict.sdl2.sdl;
 import space.engine;
 import space.enginestate;
@@ -21,13 +22,13 @@ public:
 		string t;
 		this.text = new Text(engine, "", 10);
 		if (p1 > p2) {
-			this.text.Text = "Röd vann";
+			this.text.Text = _("Red won");
 			this.text.SetColor(SDL_Color(255, 100, 100, 255), SDL_Color(200, 100, 100, 100));
 		} else if (p1 < p2) {
-			this.text.Text = "Blå vann";
+			this.text.Text = _("Blue won");
 			this.text.SetColor(SDL_Color(100, 100, 255, 255), SDL_Color(100, 100, 200, 100));
 		} else {
-			this.text.Text = "Det blev lika";
+			this.text.Text = _("It was tied");
 			this.text.SetColor(SDL_Color(255, 190, 10, 255), SDL_Color(230, 200, 5, 50));
 		}
 		line = new Text(engine, "-", 10);
@@ -36,7 +37,7 @@ public:
 		line.SetColor(SDL_Color(255, 190, 10, 255), SDL_Color(230, 200, 5, 50));
 		score1.SetColor(SDL_Color(255, 100, 100, 255), SDL_Color(200, 100, 100, 100));
 		score2.SetColor(SDL_Color(100, 100, 255, 255), SDL_Color(100, 100, 200, 100));
-		pushButton = new Text(engine, "Tryck ESC eller vänsterklicka för att gå tillbaka", 2);
+		pushButton = new Text(engine, _("Press Escape or click to go back"), 2);
 	}
 	
 	~this() {

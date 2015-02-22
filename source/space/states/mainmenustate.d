@@ -1,5 +1,6 @@
 ﻿module space.states.mainmenustate;
 
+import dtext;
 import derelict.sdl2.sdl;
 import space.engine;
 import space.enginestate;
@@ -30,11 +31,11 @@ public:
 
 		SDL_Rectd pos = SDL_Rectd((engine.Size.w/2)-(450/2), 0/*placeholder*/, 450, 120);
 		pos.y += pos.h + 250;
-		addButton(0, pos, "Spela", 8, &onClick);
+		addButton(0, pos, _("Play"), 8, &onClick);
 		pos.y += pos.h + 25;
-		addButton(1, pos, "Guide", 8, &onClick);
+		addButton(1, pos, _("Guide"), 8, &onClick);
 		pos.y += pos.h + 25;
-		addButton(2, pos, "Avsluta", 8, &onClick);
+		addButton(2, pos, _("Quit"), 8, &onClick);
 	}
 	
 	~this() {

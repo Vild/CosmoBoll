@@ -4,7 +4,8 @@
 	"copyright": "Copyright © 2014, wildn00b",
 	"authors": ["wildn00b"],
 	"dependencies": {
-		"derelict-sdl2": ">=1.2.8"
+		"derelict-sdl2": ">=1.2.8",
+		"dtext": "~>1.0.1"
 	},
 	"lflags" : ["-lncurses"]
 }
