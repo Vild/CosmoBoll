@@ -23,7 +23,7 @@ public:
 
 		this.globe = new Texture(engine, null, "res/img/globe.png");
 		this.globe.SetColor(100, 100, 100);
-		this.globePos = SDL_Rectd(1366-globe.Size.w/10*8, 768-globe.Size.h/10*7, globe.Size.w/10*8, globe.Size.h/10*7);
+		this.globePos = SDL_Rectd(engine.Size.w-globe.Size.w/10*8, engine.Size.h-globe.Size.h/10*7, globe.Size.w/10*8, globe.Size.h/10*7);
 	}
 
 	~this() {
@@ -54,7 +54,6 @@ public:
 		bg.Render(null, &bgPos1, false);
 		bg.Render(null, &bgPos2, false);
 
-		//SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, 255);
 		foreach(b; boxes) { //Todo: change to BlockTexture
 			SDL_Rect pos = SDL_Rectd(b.pos.x, b.pos.y, 16, 16).Rect();
 			SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, cast(ubyte)(255*b.life));

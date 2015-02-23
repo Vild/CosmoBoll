@@ -25,7 +25,8 @@ public:
 		loadLibraries();
 		this.size = SDL_Pointd(width, height);
 		this.sizerect = SDL_Rectd(0, 0, width, height);
-		initSDL(title, width, height, fullscreen);
+		this.fullscreen = fullscreen;
+		initSDL(title, width, height);
 		keyboard = new Keyboard();
 		mouse = new Mouse();
 		this.fpslock = false;
@@ -71,7 +72,8 @@ public:
 					if (event.key.keysym.scancode == SDL_SCANCODE_F11) {
 						uint flags = (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP); 
 						SDL_SetWindowFullscreen(window, flags);
-						if ((flags & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
+						fullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0;
+						if (fullscreen)
 							SDL_RenderSetLogicalSize(renderer, cast(int)size.x.round, cast(int)size.y.round);
 						else
 							SDL_SetWindowSize(window, cast(int)size.x.round, cast(int)size.y.round);
@@ -150,6 +152,7 @@ private:
 	double tick;
 	int currentFPS;
 	double currentFPS_MS;
+	bool fullscreen;
 
 	void loadLibraries() {
 		DerelictSDL2.load();
@@ -158,7 +161,7 @@ private:
 		DerelictSDL2ttf.load();
 	}
 	
-	void initSDL(string title, int width, int height, bool fullscreen) {
+	void initSDL(string title, int width, int height) {
 		if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 			log.Critical!initSDL("SDL_Init(): %s", to!string(SDL_GetError));
 

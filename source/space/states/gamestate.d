@@ -32,7 +32,7 @@ public:
 		renderHelper = new RenderHelper(engine);
 		bg = new ScrollingBackground(engine);
 		surface = new Texture(engine, &renderHelper, "res/img/surface.png");
-		surfacePos = new SDL_Rectd(0, 768-surface.Size.h/10*7, 1366, surface.Size.h/10*7);
+		surfacePos = new SDL_Rectd(0, engine.Size.h-surface.Size.h/10*7, engine.Size.w, surface.Size.h/10*7);
 		platform = new Texture(engine, &renderHelper, "res/img/platform.png");
 		platformsmall = new Texture(engine, &renderHelper, "res/img/platformsmall.png");
 		//platformPos = SDL_Rectd((engine.Size.w / 2) - (366/2), engine.Size.h-90, 366, 90);
@@ -48,17 +48,17 @@ public:
 		platformPole6 = SDL_Rectd((engine.Size.w / 4)*3 - (300/2)+300-66+8, engine.Size.h/2-8, 26, engine.Size.h/2+8);
 
 		sides = new BlockTexture(engine, &renderHelper, SDL_Color(0, 0, 0, 0));
-		platformSide1 = new AABB(0, -132, 1, 900);
-		platformSide2 = new AABB(1366-1, -132, 1, 900);
-		platformTop = new AABB(0, -132, 1366, 1);
-		forceField1 = new ForceField(engine, &renderHelper, "res/img/forcefieldwave.png", SDL_Color(255, 200, 200, 255), SDL_Color(161, 84, 60, 180), SDL_Rectd(0, 768-75, 1366/2, 75));
-		forceField2 = new ForceField(engine, &renderHelper, "res/img/forcefieldwave.png", SDL_Color(200, 200, 255, 255), SDL_Color(60, 84, 161, 180), SDL_Rectd(1366/2, 768-75, 1366/2, 75));
+		platformSide1 = new AABB(0, -132, 1, engine.Size.h+132);
+		platformSide2 = new AABB(engine.Size.w-1, -132, 1, engine.Size.h+132);
+		platformTop = new AABB(0, -132, engine.Size.w, 1);
+		forceField1 = new ForceField(engine, &renderHelper, "res/img/forcefieldwave.png", SDL_Color(255, 200, 200, 255), SDL_Color(161, 84, 60, 180), SDL_Rectd(0, engine.Size.h-75, engine.Size.w/2, 75));
+		forceField2 = new ForceField(engine, &renderHelper, "res/img/forcefieldwave.png", SDL_Color(200, 200, 255, 255), SDL_Color(60, 84, 161, 180), SDL_Rectd(engine.Size.w/2, engine.Size.h-75, engine.Size.w/2, 75));
 
-		player1 = new Player(engine, SDL_Color(255, 180, 180), new AABB(1366/2-44/2-44, -73, 44, 73), SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_SPACE);
-		player2 = new Player(engine, SDL_Color(180, 180, 255), new AABB(1366/2-44/2+44, -73, 44, 73), SDL_SCANCODE_UP, SDL_SCANCODE_DOWN, SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT, SDL_SCANCODE_RSHIFT);
+		player1 = new Player(engine, SDL_Color(255, 180, 180), new AABB(engine.Size.w/2-44/2-44, -73, 44, 73), SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_SPACE);
+		player2 = new Player(engine, SDL_Color(180, 180, 255), new AABB(engine.Size.w/2-44/2+44, -73, 44, 73), SDL_SCANCODE_UP, SDL_SCANCODE_DOWN, SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT, SDL_SCANCODE_RSHIFT);
 		player2.LookLeft = true;
 
-		ball = new Ball(engine, new Texture(engine, &renderHelper, "res/img/ball.png"),new AABB(1366/2-40/2, -100, 40, 40), [
+		ball = new Ball(engine, new Texture(engine, &renderHelper, "res/img/ball.png"),new AABB(engine.Size.w/2-40/2, -100, 40, 40), [
 			SDL_Pointd((engine.Size.w / 4), engine.Size.h/2-100),
 			SDL_Pointd((engine.Size.w / 4)*3, engine.Size.h/2-100),
 			SDL_Pointd((engine.Size.w / 2), engine.Size.h-200)
@@ -182,7 +182,6 @@ public:
 		pointText2.Render(&pointTextPos2);
 
 		timeText.Render(&timeTextPos);
-
 	}
 
 private:

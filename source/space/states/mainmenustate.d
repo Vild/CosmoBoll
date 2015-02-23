@@ -13,6 +13,8 @@ import space.log.log;
 import space.music.song;
 import space.states.gamestate;
 import space.states.tutorialstate;
+import space.states.afkstate;
+import space.states.creditsstate;
 import space.utils.mathhelper;
 
 class MainMenuState : EngineState {
@@ -24,18 +26,18 @@ public:
 			allTheTime.Play(-1);
 		}
 		bg = new ScrollingBackground(engine);
-		//title = new Text(engine, "\x01 Cosmo Boll \x02", 10);
-		//titlePos = SDL_Rectd((engine.Size.w/2)-(title.Size.w/2), 100, title.Size.w, title.Size.h);
 		title = new Texture(engine, null, "res/img/title.png");
 		titlePos = SDL_Rectd((engine.Size.w/2)-(1815/6), 10, 1815/3, 1004/3);
 
-		SDL_Rectd pos = SDL_Rectd((engine.Size.w/2)-(450/2), 0/*placeholder*/, 450, 120);
+		SDL_Rectd pos = SDL_Rectd((engine.Size.w/2)-(450/2), 0, 450, 120);
 		pos.y += pos.h + 250;
 		addButton(0, pos, _("Play"), 8, &onClick);
 		pos.y += pos.h + 25;
 		addButton(1, pos, _("Guide"), 8, &onClick);
 		pos.y += pos.h + 25;
-		addButton(2, pos, _("Quit"), 8, &onClick);
+		addButton(2, pos, _("Credits"), 8, &onClick);
+		pos.y += pos.h + 25;
+		addButton(3, pos, _("Quit"), 8, &onClick);
 	}
 	
 	~this() {
@@ -57,18 +59,14 @@ public:
 				if (MathHelper.CheckCollision(b.hitbox, SDL_Rectd(m.X, m.Y, 1, 1)))
 					b.onClick(b);
 		}
+		if (k.isDown(SDL_SCANCODE_PAUSE))
+			engine.ChangeState!AFKState(engine);
 	}
 	override void Render() {
 		bg.Render();
-		//title.Render(&titlePos);
 		title.Render(null, &titlePos);
-		//SDL_SetRenderDrawColor(engine.Renderer, 0, 255, 255, 255);
-		//SDL_RenderFillRect(engine.Renderer, &titlePos);
-		foreach (Button b; buttons) {
-			//buttonTex.Render(null, &b.hitbox);
+		foreach (Button b; buttons)
 			b.text.Render(&b.textPos);
-
-		}
 	}
 
 	void onClick(ref Button button) {
@@ -78,6 +76,8 @@ public:
 		else if (button.id == 1)
 			engine.ChangeState!TutorialState(engine);
 		else if (button.id == 2)
+			engine.ChangeState!CreditsState(engine);
+		else if (button.id == 3)
 			engine.Quit();
 	}
 

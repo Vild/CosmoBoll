@@ -20,7 +20,7 @@ int main(string[] args){
 	scope (exit)
 		log.LogFile.close();
 
-	Engine engine = new Engine("Cosmo Boll", 1366, 768, false);
+	Engine engine = new Engine("Cosmo Boll", 1600, 900, false);//1366, 768
 	engine.MouseState.SetEngine(&engine);
 	engine.ChangeState!IntroState(&engine);
 	engine.MainLoop();

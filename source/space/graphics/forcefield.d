@@ -23,6 +23,9 @@ public:
 		r2 = new AABB(pos.x, pos.y+pos.h, pos.w, 0, 0, 0.75);
 		s1 = SDL_Rectd(0, 0, bg.Size.w, bg.Size.h);
 		s2 = SDL_Rectd(0, 0, bg.Size.w, 0);
+
+		for (int i = 0; i < 1000; i++) //Ugly hack for some so hitbox bug TODO: find bug
+			Update(10);
 	}
 
 	~this() {

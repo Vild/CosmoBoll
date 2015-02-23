@@ -42,11 +42,14 @@ public:
 	@property ref string Text() { return text; }
 	@property ref double Scale() { return scale; }
 	@property SDL_Rectd Size() {
-		import std.algorithm : min;
-		string tmptext = text.replace("å", "\xFC").replace("ä", "\xFD").replace("ö", "\xFE");
+		import std.algorithm : min, max;
+		string[] tmptext = textSpliter(text.replace("å", "\xFC").replace("ä", "\xFD").replace("ö", "\xFE"));
+		ulong m = 0;
+		foreach(x; tmptext)
+			m = max(m, x.length);
 		return SDL_Rectd(0.0, 0.0,
-		       			min((font.Size.w / 16.0) * scale * tmptext.length, maxWidth),
-		                (font.Size.h / 16.0) * scale);
+			min((font.Size.w / 16) * scale * m, maxWidth), //TODO: findout why this works with maxwidth
+		  (font.Size.h / 16.0) * scale);
 	}
 	void SetColor(SDL_Color over, SDL_Color under) {
 		this.over = over;
@@ -66,7 +69,7 @@ private:
 		SDL_Rectd ndst = SDL_Rectd(dst);
 		ndst.w = src.w * scale;
 		ndst.h = src.h * scale;
-		string[] tmptext = textSpliter((text ~ " " /* TODO: FIX this ugly hack */).replace("å", "\xFC").replace("ä", "\xFD").replace("ö", "\xFE"));
+		string[] tmptext = textSpliter(text.replace("å", "\xFC").replace("ä", "\xFD").replace("ö", "\xFE"));
 
 		foreach (string line; tmptext) {
 			foreach (char c; line) {
@@ -89,19 +92,24 @@ private:
 
 		while (text.length) {
 			long max = text.indexOf('\n');
+			long index;
 			if (max != -1) {
-				max = min(min(max, cast(int)(maxWidth/w) - 1), text.length - 1);
-			} else {
-				if (text.length < cast(int)(maxWidth/w))
-					max = text.length - 1;
-				else
-					max = cast(int)(maxWidth/w) - 1;
-			}
-			long index = max;
+				index = max = min(max, min(cast(int)(maxWidth/w) - 1, text.length - 1));
 
-			char c = text[index];
-			while (c != ' ' && c != '\r' && c != '\n' && c != '\t' && index > 0)
-				c = text[--index];
+				char c = text[index];
+				while (c != ' ' && c != '\r' && c != '\n' && c != '\t' && index > 0)
+					c = text[--index];
+			} else {
+				if (text.length < cast(int)(maxWidth/w)) {
+					index = max = text.length - 1;
+				} else {
+					index = max = cast(int)(maxWidth/w) - 1;
+
+					char c = text[index];
+					while (c != ' ' && c != '\r' && c != '\n' && c != '\t' && index > 0)
+						c = text[--index];
+				}
+			}
 
 			if (index <= 0)
 				index = max;

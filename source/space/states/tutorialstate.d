@@ -42,7 +42,6 @@ public:
 				;
 
 		bg = new ScrollingBackground(engine);
-		//tutorial = new Texture(engine, null, "res/img/tutorial.png");
 		title = new Text(engine, _("Tutorial"), 4);
 		title.SetColor(SDL_Color(255, 190, 10, 255), SDL_Color(230, 200, 5, 50));
 		red = new Text(engine, _("Red"), 4);
@@ -59,12 +58,10 @@ public:
 		destroy(blue);
 		destroy(red);
 		destroy(title);
-		//destroy(tutorial);
 		destroy(bg);
 	}
 	override void Update(double delta) {
 		bg.Update(delta);
-		//tutorial.Update(delta);
 
 		Mouse m = engine.MouseState;
 		Keyboard k = engine.KeyboardState;
@@ -73,7 +70,6 @@ public:
 	}
 	override void Render() {
 		bg.Render();
-		//tutorial.Render(null, &engine.SizeRect());
 
 		SDL_Rectd titlePos = SDL_Rectd(engine.Size.x/2 - title.Size.w/2, 10, 0, 0);
 		SDL_Rectd redPos = SDL_Rectd(75, 300, 0, 0);
@@ -92,7 +88,6 @@ public:
 	
 private:
 	ScrollingBackground bg;
-	//Texture tutorial;
 
 	Text title;
 	Text red;
