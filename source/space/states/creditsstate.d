@@ -27,7 +27,11 @@ public:
 		text = new Text(engine,
 			"Dan Printzell - Programmer\n"
 			"Otto Falk - Graphics\n"
-			"*SONG NAME*", 3);
+			"\n\n\n\n"
+			"Songs:\n"
+			"Electro Chill A - Frank Nora (Main menu song)\n"
+			"Trance G Dampen - Frank Nora (In game song)\n"
+			, 3);
 		text.SetColor(SDL_Color(255, 255, 255, 255), SDL_Color(200, 200, 200, 100));
 	}
 	
@@ -52,7 +56,7 @@ public:
 		SDL_Rectd titlePos = SDL_Rectd(engine.Size.x/2 - title.Size.w/2, 10, 0, 0);
 		title.Render(&titlePos);
 
-		SDL_Rectd textPos = SDL_Rectd(engine.Size.x/2 - text.Size.w/2, 100, 0, 0);
+		SDL_Rectd textPos = SDL_Rectd(engine.Size.x/2 - text.Size.w/2, 150, 0, 0);
 		text.Render(&textPos);
 	}
 

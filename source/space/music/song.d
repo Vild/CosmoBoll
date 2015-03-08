@@ -4,6 +4,17 @@ import derelict.sdl2.mixer;
 import space.log.log;
 import std.string : toStringz;
 
+static ~this() {
+	foreach(tex; cacheChunk.keys)
+		Mix_FreeChunk(cacheChunk[tex]);
+
+	foreach(tex; cacheMusic.keys)
+		Mix_FreeMusic(cacheMusic[tex]);
+}
+
+static Mix_Chunk*[string] cacheChunk;
+static Mix_Music*[string] cacheMusic;
+
 class Song {
 public:
 	this(string file, bool music = false) {
@@ -15,10 +26,6 @@ public:
 
 	~this() {
 		Stop();
-		if (music)
-			Mix_FreeMusic(mus);
-		else
-			Mix_FreeChunk(chunk);
 	}
 
 	void Play(int times) {
@@ -60,10 +67,23 @@ private:
 	int volume;
 	string current;
 	void loadFile(string file) {
+		if (music) {
+			if (auto tmp = file in cacheMusic) {
+				mus = *tmp;
+				return;
+			}
+		} else {
+			if (auto tmp = file in cacheChunk) {
+				chunk = *tmp;
+				return;
+			}
+		}
+
 		if (music)
-			mus = Mix_LoadMUS(file.toStringz);
+			cacheMusic[file] = mus = Mix_LoadMUS(file.toStringz);
 		else
-			chunk = Mix_LoadWAV(file.toStringz);
+			cacheChunk[file] = chunk = Mix_LoadWAV(file.toStringz);
+
 		if (mus is null && chunk is null)
 			Log.MainLogger.Critical!loadFile("Failed to load '%s', aborting!", file);
 		else

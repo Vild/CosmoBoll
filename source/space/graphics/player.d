@@ -15,7 +15,7 @@ class Player {
 public:
 	this(Engine* engine, SDL_Color color, AABB pos, SDL_Scancode up, SDL_Scancode down, SDL_Scancode left, SDL_Scancode right, SDL_Scancode action) {
 		this.engine = engine;
-		this.idle = new Texture(engine, null, "res/img/man/idle.png");
+		this.idle = new Texture(engine, null, "res/img/man/idle.png", false);
 		this.run = new AnimatedTexture(engine, null, [
 			"res/img/man/run1.png", "res/img/man/run2.png", "res/img/man/run3.png", "res/img/man/run4.png", "res/img/man/run5.png", 
 			"res/img/man/run6.png", "res/img/man/run7.png", "res/img/man/run8.png", "res/img/man/run9.png", "res/img/man/run10.png", 
@@ -141,6 +141,24 @@ public:
 			SDL_RenderDrawLine(engine.Renderer, cast(int)(lx-1), cast(int)(pos.Y+4), cast(int)(hookedBall.Pos.X+hookedBall.Pos.W/2-1), cast(int)(hookedBall.Pos.Y+hookedBall.Pos.H/2));
 			SDL_RenderDrawLine(engine.Renderer, cast(int)(lx), cast(int)(pos.Y+4), cast(int)(hookedBall.Pos.X+hookedBall.Pos.W/2), cast(int)(hookedBall.Pos.Y+hookedBall.Pos.H/2));
 			SDL_RenderDrawLine(engine.Renderer, cast(int)(lx+1), cast(int)(pos.Y+4), cast(int)(hookedBall.Pos.X+hookedBall.Pos.W/2+1), cast(int)(hookedBall.Pos.Y+hookedBall.Pos.H/2));
+
+		}
+
+		double x = pos.X-5;
+		if (lookLeft)
+			x -= 10;
+		else
+			x += 5;
+		SDL_Rect pos_ = SDL_Rectd(x-2, pos.Y-8-2, 64+4, 8+4).Rect();
+		SDL_SetRenderDrawColor(engine.Renderer, 255, 255, 255, 200);
+		SDL_RenderFillRect(engine.Renderer, &pos_);
+
+		if (hookedBall !is null) {
+			import std.algorithm : min;
+			auto s = engine.KeyboardState.getHoldState(action);
+			pos_ = SDL_Rectd(x, pos.Y-8, min(s * 8, 64), 8).Rect();
+			SDL_SetRenderDrawColor(engine.Renderer, color.r/2, color.g/2, color.b/2, 200);
+			SDL_RenderFillRect(engine.Renderer, &pos_);
 		}
 
 	}

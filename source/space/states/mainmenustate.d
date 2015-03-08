@@ -33,7 +33,7 @@ public:
 		pos.y += pos.h + 250;
 		addButton(0, pos, _("Play"), 8, &onClick);
 		pos.y += pos.h + 25;
-		addButton(1, pos, _("Guide"), 8, &onClick);
+		addButton(1, pos, _("Tutorial"), 8, &onClick);
 		pos.y += pos.h + 25;
 		addButton(2, pos, _("Credits"), 8, &onClick);
 		pos.y += pos.h + 25;

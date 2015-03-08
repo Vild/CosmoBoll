@@ -114,6 +114,8 @@ public:
 
 	}
 
+	@property int GameTime() { return 5*60; }
+
 	@property SDL_Window* Window() { return window; }
 	@property SDL_Renderer* Renderer() { return renderer; }
 	@property EngineState State() { return state; }

@@ -8,18 +8,25 @@ import space.physics.aabb;
 import space.utils.mathhelper;
 import space.utils.renderhelper;
 import std.string : toStringz;
+import std.algorithm;
+import std.stdio;
+
+static ~this() {
+	foreach(tex; cache.keys)
+		SDL_DestroyTexture(cache[tex]);
+}
+
+static SDL_Texture*[string] cache;
+static SDL_Rectd[string] cacheSize;
 
 class Texture {
 public:
-	this(Engine* engine, RenderHelper* renderHelper, string file) {
+	this(Engine* engine, RenderHelper* renderHelper, string file, bool cached = true) {
 		this.renderer = engine.Renderer;
 		this.renderHelper = renderHelper;
+		this.cached = cached;
 		this.texture = loadFile(file);
 		ORIGO_POSITION = SDL_Pointd(0, 0); //engine.Size/2;
-	}
-
-	~this() {
-		SDL_DestroyTexture(texture);
 	}
 
 	void Update(double delta) {
@@ -58,17 +65,25 @@ protected:
 	SDL_Renderer* renderer;
 	RenderHelper* renderHelper;
 	SDL_Pointd ORIGO_POSITION;
-	this(Engine* engine, RenderHelper* renderHelper) {
+	this(Engine* engine, RenderHelper* renderHelper, bool cached = true) {
 		this.renderer = engine.Renderer;
 		this.renderHelper = renderHelper;
+		this.cached = cached;
 		ORIGO_POSITION = SDL_Pointd(0, 0);//engine.Size/2;
 	}
 
 private:
 	SDL_Texture *texture;
 	SDL_Rectd size;
+	bool cached;
 
 	SDL_Texture* loadFile(string file) {
+		if (cached)
+			if (auto b = file in cache) {
+				size = cacheSize[file];
+				return *b;
+			}
+
 		SDL_Texture* texture = IMG_LoadTexture(renderer, file.toStringz);
 		if (texture is null)
 			Log.MainLogger.Critical!loadFile("Failed to load '%s', aborting!", file);
@@ -78,6 +93,10 @@ private:
 		size = SDL_Rectd(0.0, 0.0, w, h);
 
 		Log.MainLogger.Info!loadFile("Loaded texture '%s' with size %dx%d", file, w, h);
+		if (cached) {
+			cache[file] = texture;
+			cacheSize[file] = size;
+		}
 		return texture;
 	}
 }
@@ -107,7 +126,7 @@ private:
 class AnimatedTexture : Texture {
 public:
 	this(Engine* engine, RenderHelper* renderHelper, string[] frames, double delay) {
-		super(engine, renderHelper);
+		super(engine, renderHelper, false);
 		textures = new SDL_Texture*[frames.length];
 		for(int i = 0; i < frames.length; i++)
 			textures[i] = loadFile(frames[i]);

@@ -73,7 +73,7 @@ public:
 		pointText1.SetColor(SDL_Color(255, 100, 100, 255), SDL_Color(200, 100, 100, 100));
 		pointText2.SetColor(SDL_Color(100, 100, 255, 255), SDL_Color(100, 100, 200, 100));
 
-		time = 60*5;
+		time = engine.GameTime;
 		timeText = new Text(engine, format("%d", cast(int)time.round), 8);
 		timeText.SetColor(SDL_Color(255, 255, 255, 255), SDL_Color(200, 200, 200, 100));
 	}

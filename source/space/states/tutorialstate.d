@@ -28,7 +28,7 @@ public:
 				"\n"
 				"Controls:\n"
 				"The red player uses: 'W', 'A', 'S', 'D' to move and 'SPACE' to fire the ball.\n"
-				"The blue player uses: '\x18', '\x19', '\x1A', '\x1B' to move and '\x1E SHIFT' to fire the ball.\n"
+				"The blue player uses: '\x18', '\x1B', '\x19', '\x1A' to move and 'SHIFT' to fire the ball.\n"
 				"\n"
 				"Tips:\n"
 				"The balls physics are challenging, to shoot it you need to look at that direction. "
@@ -48,7 +48,7 @@ public:
 		red.SetColor(SDL_Color(255, 100, 100, 255), SDL_Color(200, 100, 100, 100));
 		blue = new Text(engine, _("Blue"), 4);
 		blue.SetColor(SDL_Color(100, 100, 255, 255), SDL_Color(100, 100, 200, 100));
-		info = new Text(engine, _(tutorialText), 2, 900);
+		info = new Text(engine, format(_(tutorialText), engine.GameTime / 60, engine.GameTime), 2, 900);
 		pushButton = new Text(engine, _("Press Escape or click to go back"), 2);
 	}
 	
@@ -72,20 +72,67 @@ public:
 		bg.Render();
 
 		SDL_Rectd titlePos = SDL_Rectd(engine.Size.x/2 - title.Size.w/2, 10, 0, 0);
-		SDL_Rectd redPos = SDL_Rectd(75, 300, 0, 0);
-		SDL_Rectd bluePos = SDL_Rectd(engine.Size.x - 175, 300, 0, 0);
+		SDL_Rectd redPos = SDL_Rectd(125, 300, 0, 0);
+		SDL_Rectd bluePos = SDL_Rectd(engine.Size.x - 225, 300, 0, 0);
 		SDL_Rectd infoPos = SDL_Rectd(engine.Size.x/2 - 900/2, 75, 0, 0);
+		SDL_Rectd redButtonPos = redPos;
+		redButtonPos.y += 32+8;
+		redButtonPos.x += red.Size.w/2-32/2;
+		SDL_Rectd blueButtonPos = bluePos;
+		blueButtonPos.y += 32+8;
+		blueButtonPos.x += blue.Size.w/2-32/2;
 
 		title.Render(&titlePos);
 		red.Render(&redPos);
 		blue.Render(&bluePos);
 		info.Render(&infoPos);
 
+		DrawBox(redButtonPos, "W", 32, true);
+		redButtonPos.y += 32+8;
+		redButtonPos.x -= 32+8;
+		DrawBox(redButtonPos, "A", 32, true);
+		redButtonPos.x += 32+8;
+		DrawBox(redButtonPos, "S", 32, true);
+		redButtonPos.x += 32+8;
+		DrawBox(redButtonPos, "D", 32, true);
+		redButtonPos.y += 32+8;
+		redButtonPos.x -= (32+8)*3;
+		DrawBox(redButtonPos, "SPACE", (32+8)*5-8, true);
+
+
+		DrawBox(blueButtonPos, "\x18", 32, false);
+		blueButtonPos.y += 32+8;
+		blueButtonPos.x -= 32+8;
+		DrawBox(blueButtonPos, "\x1B", 32, false);
+		blueButtonPos.x += 32+8;
+		DrawBox(blueButtonPos, "\x19", 32, false);
+		blueButtonPos.x += 32+8;
+		DrawBox(blueButtonPos, "\x1A", 32, false);
+		blueButtonPos.y += 32+8;
+		blueButtonPos.x -= (32+8)*3;
+		DrawBox(blueButtonPos, "SHIFT", (32+8)*5-8, false);
 
 		SDL_Rectd tmppos = SDL_Rectd(engine.Size.x - pushButton.Size.w, engine.Size.y - pushButton.Size.h, 0, 0);
 		pushButton.Render(&tmppos);
 	}
-	
+
+	void DrawBox(SDL_Rectd pos, string text, double width, bool isRed) {
+		Text t = new Text(engine, text, 2);
+		t.SetColor(SDL_Color((isRed) ? 200 : 0, 0, (isRed) ? 0 : 200, 255), SDL_Color((isRed) ? 50 : 0, 0, (isRed) ? 0 : 50, 100));
+		SDL_Rect pos_ = SDL_Rectd(pos.x, pos.y, width, 32).Rect();
+		SDL_SetRenderDrawColor(engine.Renderer, 200, 200, 200, 255);
+		SDL_RenderFillRect(engine.Renderer, &pos_);
+		pos_.x += 2;
+		pos_.y += 2;
+		pos_.w -= 2*2;
+		pos_.h -= 2*2;
+		SDL_SetRenderDrawColor(engine.Renderer, 150, 150, 150, 255);
+		SDL_RenderFillRect(engine.Renderer, &pos_);
+
+		pos.x += width/2 - t.Size.w/2;
+		pos.y += 10;
+		t.Render(&pos);
+	}
 private:
 	ScrollingBackground bg;
 
@@ -93,7 +140,6 @@ private:
 	Text red;
 	Text blue;
 	Text info;
-
 
 	Text pushButton;
 }

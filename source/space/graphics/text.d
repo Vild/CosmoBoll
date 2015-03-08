@@ -26,7 +26,7 @@ public:
 	}
 
 	void Render(SDL_Rectd* dst) {
-		SDL_Rectd tmp = *dst;
+		SDL_Rectd tmp = SDL_Rectd(dst);
 		font.SetColor(under.r, under.g, under.b);
 		font.SetAlpha(under.a);
 		tmp.x += 1*scale;
