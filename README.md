@@ -12,7 +12,7 @@
 			  ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗╚██████╔╝██║ ╚████║    ███████╗╚██████╔╝ ██║     ██║
 			   ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝    ╚══════╝ ╚═════╝  ╚═╝     ╚═╝
 
-By Dan Printzell, Emma Söder Wikström, Otto Falk, Adi Fetahagic, Abdihamid A. Ibrahim.
+By Dan Printzell, Otto Falk
 
 Shortcuts
 =========
